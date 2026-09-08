@@ -167,7 +167,198 @@
     </header>
 
     <main class="flex-1 px-8 py-8">
-<!-- TELAS -->
+<section data-tela="painel-do-profissional" class="hidden">
+  <style>
+    .pp-card{background:#111111;border:1px solid #1F1D18;border-radius:14px}
+    .pp-kpi:hover{border-color:#D4AF37;transform:translateY(-2px)}
+    .pp-kpi{transition:all .18s ease;cursor:pointer}
+    .pp-nav{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:10px;color:#9A968C;font-size:.875rem;cursor:pointer;transition:.15s}
+    .pp-nav:hover{background:#161513;color:#FAFAFA}
+    .pp-nav.ativo{background:rgba(212,175,55,.12);color:#D4AF37;font-weight:600}
+    .pp-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#0A0A0A;background:#D4AF37;flex:none}
+    .pp-tag{font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;padding:.18rem .5rem;border-radius:999px;font-weight:700}
+  </style>
+
+  <div class="min-h-screen flex bg-[#0A0A0A] text-[#FAFAFA]" style="font-family:'Cormorant Garamond',Georgia,serif">
+    <aside class="w-64 flex-none border-r border-[#1F1D18] bg-[#0C0C0C] py-6 px-4 hidden lg:flex flex-col">
+      <div class="px-2 mb-8">
+        <div class="text-[#D4AF37] text-2xl tracking-[.18em]">HOF<span class="text-[#FAFAFA]">.MED</span></div>
+        <div class="text-[10px] tracking-[.3em] text-[#6E6A62] uppercase mt-1">Harmonização Orofacial</div>
+      </div>
+      <nav class="space-y-1" style="font-family:ui-sans-serif,system-ui">
+        <div class="pp-nav ativo" onclick="mostrarTela('painel-do-profissional')">◈ Painel</div>
+        <div class="pp-nav" onclick="mostrarTela('agenda-de-consultas')">▤ Agenda</div>
+        <div class="pp-nav" onclick="mostrarTela('ficha-do-paciente')">☺ Pacientes</div>
+        <div class="pp-nav" onclick="mostrarTela('funil-de-leads')">⇗ Leads</div>
+        <div class="pp-nav" onclick="mostrarTela('orcamento-e-pagamento')">✦ Catálogo &amp; Orçamentos</div>
+        <div class="pp-nav" onclick="mostrarTela('evolucao-em-fotos')">◫ Evolução 90 dias</div>
+        <div class="pp-nav" onclick="painel_do_profissional_relatorios()">⌁ Relatórios</div>
+      </nav>
+      <div class="mt-auto pt-6 border-t border-[#1F1D18]" style="font-family:ui-sans-serif,system-ui">
+        <div class="flex items-center gap-3 px-1">
+          <div class="pp-av">DR</div>
+          <div class="leading-tight">
+            <div class="text-sm font-semibold">Dra. Renata Vasconcelos</div>
+            <div class="text-[11px] text-[#6E6A62]">CRO-SP 68.420 · Admin</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="flex-1 min-w-0">
+      <header class="border-b border-[#1F1D18] px-8 py-5 flex items-center justify-between gap-4 bg-[#0C0C0C]">
+        <div>
+          <h1 class="text-2xl text-[#FAFAFA]">Bom dia, Dra. Renata</h1>
+          <p class="text-sm text-[#7C776D]" style="font-family:ui-sans-serif,system-ui" id="pp-data">Quinta-feira, 12 de junho de 2025 · Clínica Jardins</p>
+        </div>
+        <div class="flex items-center gap-3" style="font-family:ui-sans-serif,system-ui">
+          <button onclick="painel_do_profissional_notificar()" class="relative px-3 py-2 rounded-lg border border-[#1F1D18] hover:border-[#D4AF37] text-sm text-[#B9B4A8]">
+            🔔 <span class="absolute -top-1 -right-1 bg-[#D4AF37] text-[#0A0A0A] text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">4</span>
+          </button>
+          <button onclick="mostrarTela('agenda-de-consultas')" class="px-4 py-2 rounded-lg border border-[#2A2720] text-sm text-[#B9B4A8] hover:border-[#D4AF37]">Ver agenda</button>
+          <button onclick="mostrarTela('ficha-do-paciente')" class="px-5 py-2 rounded-lg bg-[#D4AF37] text-[#0A0A0A] text-sm font-bold hover:bg-[#e6c košt]" style="background:#D4AF37">+ Novo atendimento</button>
+        </div>
+      </header>
+
+      <div id="pp-alerta" class="hidden mx-8 mt-4 px-4 py-3 rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/10 text-sm text-[#E9DBAE]" style="font-family:ui-sans-serif,system-ui"></div>
+
+      <div class="p-8 space-y-6" style="font-family:ui-sans-serif,system-ui">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+          <div class="pp-card pp-kpi p-5" onclick="mostrarTela('agenda-de-consultas')">
+            <div class="text-[11px] tracking-[.16em] uppercase text-[#6E6A62]">Consultas de hoje</div>
+            <div class="flex items-end gap-2 mt-2"><span class="text-4xl font-bold text-[#FAFAFA]">9</span><span class="text-xs text-[#7C776D] mb-1.5">2 já atendidas</span></div>
+            <div class="mt-3 h-1 rounded-full bg-[#1F1D18]"><div class="h-1 rounded-full bg-[#D4AF37]" style="width:22%"></div></div>
+          </div>
+          <div class="pp-card pp-kpi p-5" onclick="mostrarTela('funil-de-leads')">
+            <div class="text-[11px] tracking-[.16em] uppercase text-[#6E6A62]">Leads novos</div>
+            <div class="flex items-end gap-2 mt-2"><span class="text-4xl font-bold text-[#D4AF37]">14</span><span class="text-xs text-[#7C776D] mb-1.5">6 sem contato</span></div>
+            <div class="mt-3 text-xs text-[#7C776D]">Instagram · 8 &nbsp;|&nbsp; Indicação · 4</div>
+          </div>
+          <div class="pp-card pp-kpi p-5" onclick="mostrarTela('orcamento-e-pagamento')">
+            <div class="text-[11px] tracking-[.16em] uppercase text-[#6E6A62]">Orçamentos a pagar</div>
+            <div class="flex items-end gap-2 mt-2"><span class="text-4xl font-bold text-[#FAFAFA]">7</span><span class="text-xs text-[#7C776D] mb-1.5">R$ 62.400</span></div>
+            <div class="mt-3 text-xs text-[#C9A227]">3 vencem em 48h</div>
+          </div>
+          <div class="pp-card pp-kpi p-5" onclick="mostrarTela('evolucao-em-fotos')">
+            <div class="text-[11px] tracking-[.16em] uppercase text-[#6E6A62]">Acompanhamento 90 dias</div>
+            <div class="flex items-end gap-2 mt-2"><span class="text-4xl font-bold text-[#FAFAFA]">23</span><span class="text-xs text-[#7C776D] mb-1.5">pacientes</span></div>
+            <div class="mt-3 text-xs text-[#7C776D]">5 fotos pendentes de envio</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <div class="xl:col-span-2 pp-card">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-[#1F1D18]">
+              <div>
+                <h2 class="text-lg text-[#FAFAFA]" style="font-family:'Cormorant Garamond',Georgia,serif">Próximas consultas</h2>
+                <p class="text-xs text-[#6E6A62]">Clique no paciente para abrir a ficha completa</p>
+              </div>
+              <div class="flex gap-1 text-xs">
+                <button id="pp-f-todos" onclick="painel_do_profissional_filtrar('todos')" class="px-3 py-1.5 rounded-md bg-[#D4AF37] text-[#0A0A0A] font-semibold">Todos</button>
+                <button id="pp-f-hof" onclick="painel_do_profissional_filtrar('hof')" class="px-3 py-1.5 rounded-md border border-[#2A2720] text-[#9A968C]">HOF</button>
+                <button id="pp-f-cirurgia" onclick="painel_do_profissional_filtrar('cirurgia')" class="px-3 py-1.5 rounded-md border border-[#2A2720] text-[#9A968C]">Cirurgia</button>
+              </div>
+            </div>
+            <div id="pp-lista" class="divide-y divide-[#161513]"></div>
+            <div class="px-6 py-4 border-t border-[#1F1D18]">
+              <button onclick="mostrarTela('agenda-de-consultas')" class="w-full py-2.5 rounded-lg border border-[#2A2720] text-sm text-[#C9C4B8] hover:border-[#D4AF37] hover:text-[#D4AF37]">Abrir agenda completa da semana</button>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div class="pp-card p-6">
+              <h2 class="text-lg mb-1" style="font-family:'Cormorant Garamond',Georgia,serif">Pendências clínicas</h2>
+              <p class="text-xs text-[#6E6A62] mb-4">Resolva antes do primeiro atendimento</p>
+              <div class="space-y-3">
+                <div onclick="mostrarTela('ficha-do-paciente')" class="cursor-pointer flex items-start gap-3 p-3 rounded-lg bg-[#0F0E0C] hover:bg-[#151310] border border-[#1A1815]">
+                  <span class="text-lg">🧪</span>
+                  <div><div class="text-sm text-[#FAFAFA]">Exames laboratoriais de Marina Sampaio</div><div class="text-xs text-[#7C776D]">Hemograma + Ferritina · aguardando interpretação</div></div>
+                </div>
+                <div onclick="mostrarTela('evolucao-em-fotos')" class="cursor-pointer flex items-start gap-3 p-3 rounded-lg bg-[#0F0E0C] hover:bg-[#151310] border border-[#1A1815]">
+                  <span class="text-lg">📸</span>
+                  <div><div class="text-sm text-[#FAFAFA]">Foto D+30 de Camila Duarte</div><div class="text-xs text-[#7C776D]">Rinomodelação · lembrete enviado no WhatsApp</div></div>
+                </div>
+                <div onclick="mostrarTela('orcamento-e-pagamento')" class="cursor-pointer flex items-start gap-3 p-3 rounded-lg bg-[#0F0E0C] hover:bg-[#151310] border border-[#1A1815]">
+                  <span class="text-lg">💳</span>
+                  <div><div class="text-sm text-[#FAFAFA]">Orçamento #2418 — Ricardo Prado</div><div class="text-xs text-[#7C776D]">R$ 14.800 · link de pagamento expira hoje</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pp-card p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg" style="font-family:'Cormorant Garamond',Georgia,serif">Resultados do mês</h2>
+                <button onclick="painel_do_profissional_relatorios()" class="text-xs text-[#D4AF37] hover:underline">Ver relatório</button>
+              </div>
+              <div class="space-y-4 text-sm">
+                <div><div class="flex justify-between mb-1"><span class="text-[#9A968C]">Faturamento</span><span class="font-semibold text-[#FAFAFA]">R$ 187.350</span></div><div class="h-1.5 rounded-full bg-[#1F1D18]"><div class="h-1.5 rounded-full bg-[#D4AF37]" style="width:78%"></div></div><div class="text-[11px] text-[#6E6A62] mt-1">78% da meta de R$ 240.000</div></div>
+                <div><div class="flex justify-between mb-1"><span class="text-[#9A968C]">Conversão de leads</span><span class="font-semibold text-[#FAFAFA]">31%</span></div><div class="h-1.5 rounded-full bg-[#1F1D18]"><div class="h-1.5 rounded-full bg-[#8C7420]" style="width:31%"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span class="text-[#9A968C]">Adesão ao follow-up 90d</span><span class="font-semibold text-[#FAFAFA]">86%</span></div><div class="h-1.5 rounded-full bg-[#1F1D18]"><div class="h-1.5 rounded-full bg-[#D4AF37]" style="width:86%"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const painel_do_profissional_consultas = [
+      {h:"09:00", n:"Marina Sampaio", i:"MS", p:"Protocolo Full Face · retorno", t:"hof", s:"Confirmada", c:"#D4AF37"},
+      {h:"10:30", n:"Camila Duarte", i:"CD", p:"Rinomodelação · avaliação D+30", t:"hof", s:"Aguardando", c:"#8C7420"},
+      {h:"11:45", n:"Ricardo Prado", i:"RP", p:"Pré-operatório · bichectomia", t:"cirurgia", s:"Confirmada", c:"#D4AF37"},
+      {h:"14:00", n:"Juliana Meireles", i:"JM", p:"Toxina botulínica terço superior", t:"hof", s:"Confirmada", c:"#D4AF37"},
+      {h:"15:30", n:"Eduardo Bastos", i:"EB", p:"Pós-op D+7 · lifting facial", t:"cirurgia", s:"Chegou", c:"#5E9C6B"},
+      {h:"16:45", n:"Patrícia Lemos", i:"PL", p:"1ª consulta · vinda do Instagram", t:"hof", s:"Novo", c:"#8C7420"}
+    ];
+
+    function painel_do_profissional_render(filtro){
+      const alvo = document.getElementById('pp-lista');
+      const itens = painel_do_profissional_consultas.filter(c => filtro==='todos' || c.t===filtro);
+      alvo.innerHTML = itens.map(c => `
+        <div onclick="mostrarTela('ficha-do-paciente')" class="flex items-center gap-4 px-6 py-4 cursor-pointer hover:bg-[#121110] transition">
+          <div class="text-sm font-bold text-[#D4AF37] w-14">${c.h}</div>
+          <div class="pp-av">${c.i}</div>
+          <div class="min-w-0 flex-1">
+            <div class="text-[15px] text-[#FAFAFA] truncate">${c.n}</div>
+            <div class="text-xs text-[#7C776D] truncate">${c.p}</div>
+          </div>
+          <span class="pp-tag" style="color:${c.c};border:1px solid ${c.c}55">${c.s}</span>
+          <span class="text-[#4A4740] text-lg">›</span>
+        </div>`).join('') || '<div class="px-6 py-10 text-center text-sm text-[#6E6A62]">Nenhuma consulta neste filtro hoje.</div>';
+    }
+
+    function painel_do_profissional_filtrar(f){
+      ['todos','hof','cirurgia'].forEach(k=>{
+        const b=document.getElementById('pp-f-'+k);
+        b.className = k===f ? 'px-3 py-1.5 rounded-md bg-[#D4AF37] text-[#0A0A0A] font-semibold'
+                            : 'px-3 py-1.5 rounded-md border border-[#2A2720] text-[#9A968C]';
+      });
+      painel_do_profissional_render(f);
+    }
+
+    function painel_do_profissional_aviso(txt){
+      const a = document.getElementById('pp-alerta');
+      a.textContent = txt;
+      a.classList.remove('hidden');
+      clearTimeout(window.ppT);
+      window.ppT = setTimeout(()=>a.classList.add('hidden'), 4200);
+    }
+
+    function painel_do_profissional_notificar(){
+      painel_do_profissional_aviso('4 notificações: 2 confirmações de consulta pelo WhatsApp, 1 pagamento aprovado (Pix R$ 3.200) e 1 foto D+60 enviada por Camila Duarte.');
+    }
+
+    function painel_do_profissional_relatorios(){
+      painel_do_profissional_aviso('Relatório de junho: 42 procedimentos, ticket médio R$ 4.460, 31% de conversão. Abrindo detalhamento por orçamentos.');
+      setTimeout(()=>mostrarTela('orcamento-e-pagamento'), 900);
+    }
+
+    painel_do_profissional_render('todos');
+  </script>
+</section>
+
+    <!-- TELAS -->
     </main>
 
     <footer class="px-8 py-5 border-t border-white/5 text-[11px] text-cinza/70 flex items-center justify-between">
