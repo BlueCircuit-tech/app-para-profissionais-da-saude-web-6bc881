@@ -601,6 +601,293 @@
   </script>
 </section>
 
+    <section data-tela="ficha-do-paciente" class="hidden">
+  <style>
+    .fp-card{background:#111111;border:1px solid #1f1f1f;border-radius:14px}
+    .fp-tab{padding:.6rem 1.1rem;border-radius:9px;font-size:.82rem;letter-spacing:.02em;color:#8a8a8a;border:1px solid transparent;cursor:pointer}
+    .fp-tab.ativa{background:#D4AF37;color:#0A0A0A;font-weight:600}
+    .fp-tab:not(.ativa):hover{color:#FAFAFA;border-color:#2a2a2a}
+    .fp-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:#6f6f6f}
+    .fp-in{width:100%;background:#0A0A0A;border:1px solid #262626;border-radius:9px;padding:.6rem .8rem;color:#FAFAFA;font-size:.85rem;outline:none}
+    .fp-in:focus{border-color:#D4AF37}
+    .fp-btn{background:#D4AF37;color:#0A0A0A;font-weight:600;border-radius:9px;padding:.6rem 1.1rem;font-size:.83rem}
+    .fp-btn:hover{background:#e6c455}
+    .fp-ghost{border:1px solid #2f2f2f;color:#d9d9d9;border-radius:9px;padding:.6rem 1.1rem;font-size:.83rem}
+    .fp-ghost:hover{border-color:#D4AF37;color:#D4AF37}
+  </style>
+
+  <div class="px-8 py-7 max-w-[1400px]">
+
+    <div class="flex items-center gap-2 text-xs text-neutral-500 mb-5">
+      <button onclick="mostrarTela('painel-do-profissional')" class="hover:text-[#D4AF37]">Painel</button>
+      <span>/</span>
+      <button onclick="mostrarTela('agenda-de-consultas')" class="hover:text-[#D4AF37]">Agenda</button>
+      <span>/</span>
+      <span class="text-neutral-300">Prontuário · Marina Toledo Vasques</span>
+    </div>
+
+    <div class="fp-card p-6 mb-6">
+      <div class="flex flex-wrap items-start gap-6">
+        <div class="w-20 h-20 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-2xl font-semibold text-[#D4AF37]">MV</div>
+        <div class="flex-1 min-w-[280px]">
+          <div class="flex items-center gap-3 flex-wrap">
+            <h1 class="text-2xl font-semibold text-[#FAFAFA]">Marina Toledo Vasques</h1>
+            <span class="text-[.68rem] px-2 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30">Pós-op D+34</span>
+            <span class="text-[.68rem] px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">Adimplente</span>
+          </div>
+          <p class="text-sm text-neutral-400 mt-1">38 anos · CPF 327.884.610-05 · Rua Haddock Lobo, 1.412 — Jardins, São Paulo/SP</p>
+          <p class="text-sm text-neutral-400">(11) 98842-7710 · marina.vasques@gmail.com · Convênio: Particular</p>
+        </div>
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="px-4 py-3 rounded-xl bg-[#0A0A0A] border border-[#1f1f1f]">
+            <p class="text-[.62rem] uppercase tracking-widest text-neutral-500">Procedimento</p>
+            <p class="text-sm text-[#FAFAFA] mt-1">Deep Plane</p>
+          </div>
+          <div class="px-4 py-3 rounded-xl bg-[#0A0A0A] border border-[#1f1f1f]">
+            <p class="text-[.62rem] uppercase tracking-widest text-neutral-500">Cirurgia</p>
+            <p class="text-sm text-[#FAFAFA] mt-1">12/04/2024</p>
+          </div>
+          <div class="px-4 py-3 rounded-xl bg-[#0A0A0A] border border-[#1f1f1f]">
+            <p class="text-[.62rem] uppercase tracking-widest text-neutral-500">Fotos 90d</p>
+            <p class="text-sm text-[#D4AF37] mt-1">7 registros</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3 mt-6 pt-5 border-t border-[#1c1c1c]">
+        <button class="fp-btn" onclick="mostrarTela('orcamento-e-pagamento')">Gerar orçamento</button>
+        <button class="fp-ghost" onclick="mostrarTela('evolucao-em-fotos')">Acompanhamento em fotos</button>
+        <button class="fp-ghost" onclick="mostrarTela('agenda-de-consultas')">Agendar retorno</button>
+        <button class="fp-ghost" onclick="ficha_do_paciente_whats()">Enviar WhatsApp</button>
+        <span id="fp-toast" class="hidden text-xs text-emerald-400 self-center"></span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6">
+      <div>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <button class="fp-tab ativa" data-fptab="resumo" onclick="ficha_do_paciente_aba('resumo')">Resumo clínico</button>
+          <button class="fp-tab" data-fptab="exames" onclick="ficha_do_paciente_aba('exames')">Exames</button>
+          <button class="fp-tab" data-fptab="prescricoes" onclick="ficha_do_paciente_aba('prescricoes')">Prescrições</button>
+          <button class="fp-tab" data-fptab="orcamentos" onclick="ficha_do_paciente_aba('orcamentos')">Orçamentos</button>
+          <button class="fp-tab" data-fptab="fotos" onclick="ficha_do_paciente_aba('fotos')">Fotos</button>
+        </div>
+
+        <div data-fppainel="resumo">
+          <div class="fp-card p-6 mb-5">
+            <h2 class="text-sm uppercase tracking-widest text-[#D4AF37] mb-4">Histórico clínico</h2>
+            <div class="grid md:grid-cols-2 gap-5 text-sm text-neutral-300">
+              <div><p class="fp-lbl mb-1">Queixa principal</p><p>Flacidez em terço médio e sulco nasogeniano acentuado.</p></div>
+              <div><p class="fp-lbl mb-1">Alergias</p><p>Dipirona (rash cutâneo). Nega alergia a látex.</p></div>
+              <div><p class="fp-lbl mb-1">Medicações em uso</p><p>Levotiroxina 50mcg/dia · Vitamina D 2.000 UI</p></div>
+              <div><p class="fp-lbl mb-1">Comorbidades</p><p>Hipotireoidismo compensado. Nega HAS/DM.</p></div>
+            </div>
+          </div>
+          <div class="fp-card p-6">
+            <h2 class="text-sm uppercase tracking-widest text-[#D4AF37] mb-4">Linha do tempo</h2>
+            <ul class="space-y-4 text-sm">
+              <li class="flex gap-4"><span class="text-neutral-500 w-24 shrink-0">16/05/2024</span><span class="text-neutral-300">Retorno D+34 — edema residual leve em região malar. Liberada massagem linfática.</span></li>
+              <li class="flex gap-4"><span class="text-neutral-500 w-24 shrink-0">12/04/2024</span><span class="text-neutral-300">Ritidoplastia Deep Plane + blefaroplastia superior. Hospital Sírio-Libanês.</span></li>
+              <li class="flex gap-4"><span class="text-neutral-500 w-24 shrink-0">02/04/2024</span><span class="text-neutral-300">Avaliação pré-operatória com risco cirúrgico liberado (ASA I).</span></li>
+              <li class="flex gap-4"><span class="text-neutral-500 w-24 shrink-0">18/03/2024</span><span class="text-neutral-300">Consulta inicial HOF — planejamento facial e simulação 3D.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div data-fppainel="exames" class="hidden">
+          <div class="fp-card p-6 mb-5">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+              <div>
+                <h2 class="text-sm uppercase tracking-widest text-[#D4AF37]">Hemograma + Bioquímica — Fleury</h2>
+                <p class="text-xs text-neutral-500 mt-1">laudo_fleury_02042024.pdf · 3 páginas · recebido pelo portal do paciente</p>
+              </div>
+              <button class="fp-ghost" onclick="ficha_do_paciente_toast('Laudo em PDF aberto em visualização')">Abrir PDF</button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead class="text-[.66rem] uppercase tracking-widest text-neutral-500 border-b border-[#1f1f1f]">
+                  <tr><th class="text-left py-2">Marcador</th><th class="text-left">Resultado</th><th class="text-left">Referência</th><th class="text-left">Status</th></tr>
+                </thead>
+                <tbody class="divide-y divide-[#161616]">
+                  <tr><td class="py-3 text-neutral-300">Hemoglobina</td><td class="text-[#FAFAFA]">11,4 g/dL</td><td class="text-neutral-500">12,0 – 15,5</td><td><span class="text-[.68rem] px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/25">Baixo</span></td></tr>
+                  <tr><td class="py-3 text-neutral-300">Ferritina</td><td class="text-[#FAFAFA]">14 ng/mL</td><td class="text-neutral-500">15 – 150</td><td><span class="text-[.68rem] px-2 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/25">Alterado</span></td></tr>
+                  <tr><td class="py-3 text-neutral-300">Vitamina D (25-OH)</td><td class="text-[#FAFAFA]">28 ng/mL</td><td class="text-neutral-500">30 – 60</td><td><span class="text-[.68rem] px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/25">Limítrofe</span></td></tr>
+                  <tr><td class="py-3 text-neutral-300">TSH</td><td class="text-[#FAFAFA]">2,1 µUI/mL</td><td class="text-neutral-500">0,4 – 4,0</td><td><span class="text-[.68rem] px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">Normal</span></td></tr>
+                  <tr><td class="py-3 text-neutral-300">Coagulograma (INR)</td><td class="text-[#FAFAFA]">1,0</td><td class="text-neutral-500">0,9 – 1,2</td><td><span class="text-[.68rem] px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">Normal</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="fp-card p-6">
+            <p class="fp-lbl mb-2">Interpretação do profissional</p>
+            <textarea id="fp-interp" rows="4" class="fp-in" placeholder="Descreva a leitura dos marcadores e a conduta...">Anemia ferropriva leve com ferritina reduzida. Iniciar reposição de ferro 30 dias antes do procedimento e repetir hemograma.</textarea>
+            <div class="flex gap-3 mt-4">
+              <button class="fp-btn" onclick="ficha_do_paciente_salvarInterp()">Salvar interpretação</button>
+              <button class="fp-ghost" onclick="ficha_do_paciente_aba('prescricoes')">Prescrever a partir do exame</button>
+            </div>
+            <div id="fp-interp-hist" class="hidden mt-4 text-xs text-neutral-400 border-t border-[#1c1c1c] pt-4"></div>
+          </div>
+        </div>
+
+        <div data-fppainel="prescricoes" class="hidden">
+          <div class="fp-card p-6 mb-5">
+            <h2 class="text-sm uppercase tracking-widest text-[#D4AF37] mb-4">Nova receita digital</h2>
+            <div class="grid md:grid-cols-[2fr_1fr_1fr] gap-3">
+              <div><p class="fp-lbl mb-1">Medicamento</p><input id="fp-med" class="fp-in" placeholder="Ex.: Noripurum 100mg"></div>
+              <div><p class="fp-lbl mb-1">Posologia</p><input id="fp-pos" class="fp-in" placeholder="1 cp após almoço"></div>
+              <div><p class="fp-lbl mb-1">Duração</p>
+                <select id="fp-dur" class="fp-in"><option>30 dias</option><option>60 dias</option><option>90 dias</option><option>Uso contínuo</option></select>
+              </div>
+            </div>
+            <button class="fp-ghost mt-4" onclick="ficha_do_paciente_addMed()">+ Adicionar à receita</button>
+          </div>
+          <div class="fp-card p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-sm uppercase tracking-widest text-[#D4AF37]">Receita em edição</h2>
+              <span class="text-xs text-neutral-500">Dra. Helena Marques · CRM-SP 128.443</span>
+            </div>
+            <ul id="fp-receita" class="space-y-3 text-sm">
+              <li class="flex items-start justify-between gap-4 bg-[#0A0A0A] border border-[#1f1f1f] rounded-xl px-4 py-3">
+                <div><p class="text-[#FAFAFA]">Sulfato ferroso 40mg</p><p class="text-xs text-neutral-500">1 comprimido em jejum · 30 dias</p></div>
+                <button class="text-xs text-neutral-500 hover:text-red-400" onclick="this.closest('li').remove()">remover</button>
+              </li>
+              <li class="flex items-start justify-between gap-4 bg-[#0A0A0A] border border-[#1f1f1f] rounded-xl px-4 py-3">
+                <div><p class="text-[#FAFAFA]">Arnica montana 30CH</p><p class="text-xs text-neutral-500">5 gotas 3x ao dia · 15 dias</p></div>
+                <button class="text-xs text-neutral-500 hover:text-red-400" onclick="this.closest('li').remove()">remover</button>
+              </li>
+            </ul>
+            <div class="flex flex-wrap gap-3 mt-5">
+              <button class="fp-btn" onclick="ficha_do_paciente_enviarReceita()">Assinar e enviar ao paciente</button>
+              <button class="fp-ghost" onclick="ficha_do_paciente_toast('Prévia da receita gerada em PDF')">Ver prévia</button>
+            </div>
+            <p id="fp-receita-ok" class="hidden mt-4 text-xs text-emerald-400"></p>
+          </div>
+        </div>
+
+        <div data-fppainel="orcamentos" class="hidden">
+          <div class="fp-card p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-sm uppercase tracking-widest text-[#D4AF37]">Orçamentos do paciente</h2>
+              <button class="fp-btn" onclick="mostrarTela('orcamento-e-pagamento')">Gerar orçamento</button>
+            </div>
+            <table class="w-full text-sm">
+              <thead class="text-[.66rem] uppercase tracking-widest text-neutral-500 border-b border-[#1f1f1f]">
+                <tr><th class="text-left py-2">Nº</th><th class="text-left">Procedimento</th><th class="text-left">Valor</th><th class="text-left">Status</th><th></th></tr>
+              </thead>
+              <tbody class="divide-y divide-[#161616]">
+                <tr class="hover:bg-[#151515] cursor-pointer" onclick="mostrarTela('orcamento-e-pagamento')">
+                  <td class="py-3 text-neutral-500">#2418</td><td class="text-neutral-300">Ritidoplastia Deep Plane + blefaro</td><td class="text-[#FAFAFA]">R$ 62.000,00</td><td><span class="text-emerald-400 text-xs">Pago (6x)</span></td><td class="text-right text-[#D4AF37] text-xs">abrir →</td>
+                </tr>
+                <tr class="hover:bg-[#151515] cursor-pointer" onclick="mostrarTela('orcamento-e-pagamento')">
+                  <td class="py-3 text-neutral-500">#2673</td><td class="text-neutral-300">Protocolo HOF — 2 sessões bioestimulador</td><td class="text-[#FAFAFA]">R$ 7.400,00</td><td><span class="text-amber-400 text-xs">Aguardando pagamento</span></td><td class="text-right text-[#D4AF37] text-xs">abrir →</td>
+                </tr>
+                <tr class="hover:bg-[#151515] cursor-pointer" onclick="mostrarTela('orcamento-e-pagamento')">
+                  <td class="py-3 text-neutral-500">#2701</td><td class="text-neutral-300">Skinbooster facial (sessão avulsa)</td><td class="text-[#FAFAFA]">R$ 1.850,00</td><td><span class="text-neutral-400 text-xs">Rascunho</span></td><td class="text-right text-[#D4AF37] text-xs">abrir →</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div data-fppainel="fotos" class="hidden">
+          <div class="fp-card p-6">
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="text-sm uppercase tracking-widest text-[#D4AF37]">Acompanhamento fotográfico — 90 dias</h2>
+              <button class="fp-ghost" onclick="mostrarTela('evolucao-em-fotos')">Comparar lado a lado</button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <button onclick="mostrarTela('evolucao-em-fotos')" class="text-left group">
+                <div class="aspect-[3/4] rounded-xl bg-gradient-to-b from-[#1b1b1b] to-[#0f0f0f] border border-[#242424] group-hover:border-[#D4AF37] flex items-end p-3"><span class="text-xs text-neutral-400">Frontal</span></div>
+                <p class="text-xs text-neutral-500 mt-2">D0 · 12/04</p>
+              </button>
+              <button onclick="mostrarTela('evolucao-em-fotos')" class="text-left group">
+                <div class="aspect-[3/4] rounded-xl bg-gradient-to-b from-[#1b1b1b] to-[#0f0f0f] border border-[#242424] group-hover:border-[#D4AF37] flex items-end p-3"><span class="text-xs text-neutral-400">Perfil D</span></div>
+                <p class="text-xs text-neutral-500 mt-2">D+7 · 19/04</p>
+              </button>
+              <button onclick="mostrarTela('evolucao-em-fotos')" class="text-left group">
+                <div class="aspect-[3/4] rounded-xl bg-gradient-to-b from-[#1b1b1b] to-[#0f0f0f] border border-[#242424] group-hover:border-[#D4AF37] flex items-end p-3"><span class="text-xs text-neutral-400">Frontal</span></div>
+                <p class="text-xs text-neutral-500 mt-2">D+21 · 03/05</p>
+              </button>
+              <button onclick="mostrarTela('evolucao-em-fotos')" class="text-left group">
+                <div class="aspect-[3/4] rounded-xl bg-gradient-to-b from-[#20200f] to-[#0f0f0f] border border-[#D4AF37]/40 group-hover:border-[#D4AF37] flex items-end p-3"><span class="text-xs text-[#D4AF37]">Último envio</span></div>
+                <p class="text-xs text-neutral-500 mt-2">D+34 · 16/05</p>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="space-y-5">
+        <div class="fp-card p-5">
+          <p class="fp-lbl mb-3">Próximo compromisso</p>
+          <p class="text-[#FAFAFA] text-sm font-medium">Retorno D+60</p>
+          <p class="text-xs text-neutral-500 mt-1">11/06/2024 · 15h30 · Consultório Itaim</p>
+          <button class="fp-ghost w-full mt-4" onclick="mostrarTela('agenda-de-consultas')">Ver na agenda</button>
+        </div>
+        <div class="fp-card p-5">
+          <p class="fp-lbl mb-3">Origem do lead</p>
+          <p class="text-sm text-neutral-300">Instagram · campanha "Deep Plane 2024"</p>
+          <p class="text-xs text-neutral-500 mt-1">Qualificada por Camila Ruiz em 14/03/2024</p>
+          <button class="fp-ghost w-full mt-4" onclick="mostrarTela('funil-de-leads')">Abrir no funil</button>
+        </div>
+        <div class="fp-card p-5">
+          <p class="fp-lbl mb-3">Documentos</p>
+          <ul class="space-y-2 text-sm">
+            <li><button class="w-full text-left text-neutral-300 hover:text-[#D4AF37]" onclick="ficha_do_paciente_toast('Termo de consentimento aberto')">📄 Termo de consentimento.pdf</button></li>
+            <li><button class="w-full text-left text-neutral-300 hover:text-[#D4AF37]" onclick="ficha_do_paciente_aba('exames')">📄 Laudo Fleury 02/04.pdf</button></li>
+            <li><button class="w-full text-left text-neutral-300 hover:text-[#D4AF37]" onclick="ficha_do_paciente_toast('Risco cirúrgico aberto')">📄 Risco cirúrgico ASA I.pdf</button></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    function ficha_do_paciente_aba(id){
+      document.querySelectorAll('[data-fptab]').forEach(function(b){b.classList.toggle('ativa', b.dataset.fptab===id)});
+      document.querySelectorAll('[data-fppainel]').forEach(function(p){p.classList.toggle('hidden', p.dataset.fppainel!==id)});
+    }
+    function ficha_do_paciente_toast(msg){
+      var t=document.getElementById('fp-toast');
+      t.textContent='✓ '+msg; t.classList.remove('hidden');
+      clearTimeout(window.__fpT); window.__fpT=setTimeout(function(){t.classList.add('hidden')},2600);
+    }
+    function ficha_do_paciente_whats(){
+      ficha_do_paciente_toast('WhatsApp enviado para (11) 98842-7710 pedindo a foto de D+45');
+    }
+    function ficha_do_paciente_salvarInterp(){
+      var v=document.getElementById('fp-interp').value.trim();
+      if(!v){ficha_do_paciente_toast('Escreva a interpretação antes de salvar');return;}
+      var h=document.getElementById('fp-interp-hist');
+      h.classList.remove('hidden');
+      h.innerHTML='Assinado por Dra. Helena Marques (CRM-SP 128.443) em '+new Date().toLocaleDateString('pt-BR')+' — '+v;
+      ficha_do_paciente_toast('Interpretação salva no prontuário');
+    }
+    function ficha_do_paciente_addMed(){
+      var m=document.getElementById('fp-med'), p=document.getElementById('fp-pos'), d=document.getElementById('fp-dur');
+      if(!m.value.trim()){ficha_do_paciente_toast('Informe o medicamento');return;}
+      var li=document.createElement('li');
+      li.className='flex items-start justify-between gap-4 bg-[#0A0A0A] border border-[#D4AF37]/40 rounded-xl px-4 py-3';
+      li.innerHTML='<div><p class="text-[#FAFAFA]">'+m.value+'</p><p class="text-xs text-neutral-500">'+(p.value||'conforme orientação')+' · '+d.value+'</p></div>';
+      var b=document.createElement('button');
+      b.className='text-xs text-neutral-500 hover:text-red-400'; b.textContent='remover';
+      b.onclick=function(){li.remove()};
+      li.appendChild(b);
+      document.getElementById('fp-receita').appendChild(li);
+      m.value=''; p.value='';
+      ficha_do_paciente_toast('Item adicionado à receita');
+    }
+    function ficha_do_paciente_enviarReceita(){
+      var n=document.getElementById('fp-receita').children.length;
+      if(!n){ficha_do_paciente_toast('Adicione ao menos um medicamento');return;}
+      var ok=document.getElementById('fp-receita-ok');
+      ok.classList.remove('hidden');
+      ok.textContent='Receita com '+n+' item(ns) assinada digitalmente e enviada por WhatsApp e push para Marina em '+new Date().toLocaleString('pt-BR')+'.';
+      ficha_do_paciente_toast('Receita enviada ao paciente');
+    }
+  </script>
+</section>
+
     <!-- TELAS -->
     </main>
 
