@@ -1168,6 +1168,273 @@
   </script>
 </section>
 
+    <section data-tela="orcamento-e-pagamento" class="hidden">
+  <style>
+    .oep-card{background:#111111;border:1px solid #262626;border-radius:14px}
+    .oep-gold{color:#D4AF37}
+    .oep-btn{background:#D4AF37;color:#0A0A0A;font-weight:700;border-radius:10px;transition:.2s}
+    .oep-btn:hover{filter:brightness(1.12)}
+    .oep-ghost{border:1px solid #3a3a3a;color:#FAFAFA;border-radius:10px;transition:.2s}
+    .oep-ghost:hover{border-color:#D4AF37;color:#D4AF37}
+    .oep-tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a8a8a}
+  </style>
+
+  <div class="px-8 py-7 max-w-[1400px] mx-auto text-[#FAFAFA]">
+    <div class="flex items-start justify-between gap-6 flex-wrap mb-7">
+      <div>
+        <p class="oep-tag mb-1">Comercial · Pedido nº 2418</p>
+        <h1 class="text-3xl font-semibold tracking-tight">Orçamento e Pagamento</h1>
+        <p class="text-sm text-[#9a9a9a] mt-1">Paciente: <span class="oep-gold font-medium">Renata Albuquerque Mendes</span> · 38 anos · vinda do Instagram · Dra. Marina Sperandio</p>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="mostrarTela('funil-de-leads')" class="oep-ghost px-4 py-2.5 text-sm">← Voltar ao funil</button>
+        <button onclick="mostrarTela('ficha-do-paciente')" class="oep-ghost px-4 py-2.5 text-sm">Abrir ficha</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-6">
+
+      <div>
+        <div class="flex gap-2 mb-4" id="oepFiltros">
+          <button onclick="orcamento_e_pagamento_filtrar('todos',this)" class="oep-btn px-4 py-2 text-xs">Todos</button>
+          <button onclick="orcamento_e_pagamento_filtrar('hof',this)" class="oep-ghost px-4 py-2 text-xs">HOF</button>
+          <button onclick="orcamento_e_pagamento_filtrar('cirurgia',this)" class="oep-ghost px-4 py-2 text-xs">Cirurgia da face</button>
+          <button onclick="orcamento_e_pagamento_filtrar('protocolo',this)" class="oep-ghost px-4 py-2 text-xs">Protocolos</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="oepCatalogo"></div>
+      </div>
+
+      <div class="space-y-4">
+        <div class="oep-card p-5">
+          <h2 class="text-lg font-semibold mb-1">Resumo do orçamento</h2>
+          <p class="text-xs text-[#8a8a8a] mb-4">Validade: 15/06/2024 · Emitido por Dra. Marina Sperandio</p>
+
+          <div id="oepItens" class="space-y-3 mb-4"></div>
+
+          <div class="border-t border-[#262626] pt-4 space-y-2 text-sm">
+            <div class="flex justify-between text-[#9a9a9a]"><span>Subtotal</span><span id="oepSubtotal">R$ 0,00</span></div>
+            <div class="flex items-center justify-between">
+              <label class="text-[#9a9a9a]">Desconto</label>
+              <select id="oepDesconto" onchange="orcamento_e_pagamento_calcular()" class="bg-[#0A0A0A] border border-[#333] rounded-lg px-2 py-1 text-xs text-[#FAFAFA]">
+                <option value="0">Sem desconto</option>
+                <option value="5">5% · indicação</option>
+                <option value="10" selected>10% · pacote fechado</option>
+                <option value="15">15% · pagamento à vista</option>
+              </select>
+            </div>
+            <div class="flex justify-between text-[#D4AF37]"><span>Você economiza</span><span id="oepEconomia">R$ 0,00</span></div>
+            <div class="flex items-center justify-between">
+              <label class="text-[#9a9a9a]">Parcelamento</label>
+              <select id="oepParcelas" onchange="orcamento_e_pagamento_calcular()" class="bg-[#0A0A0A] border border-[#333] rounded-lg px-2 py-1 text-xs text-[#FAFAFA]">
+                <option value="1">À vista</option>
+                <option value="3">3x sem juros</option>
+                <option value="6" selected>6x sem juros</option>
+                <option value="10">10x com juros (1,9% a.m.)</option>
+              </select>
+            </div>
+            <div class="flex justify-between items-end border-t border-[#262626] pt-3 mt-1">
+              <span class="text-sm text-[#9a9a9a]">Total</span>
+              <div class="text-right">
+                <p class="text-2xl font-semibold oep-gold" id="oepTotal">R$ 0,00</p>
+                <p class="text-xs text-[#8a8a8a]" id="oepParcelaTxt">—</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5 space-y-2">
+            <button onclick="orcamento_e_pagamento_whats()" class="w-full oep-ghost py-2.5 text-sm">📲 Enviar orçamento por WhatsApp</button>
+            <button onclick="orcamento_e_pagamento_checkout()" class="w-full oep-btn py-3 text-sm">Ir para o checkout</button>
+          </div>
+          <p id="oepAviso" class="hidden mt-3 text-xs text-center text-[#D4AF37] bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-lg py-2"></p>
+        </div>
+
+        <div class="oep-card p-5">
+          <p class="oep-tag mb-3">Próximo passo automático</p>
+          <p class="text-sm text-[#c9c9c9] leading-relaxed">Ao confirmar o pagamento, a 1ª sessão é reservada na agenda da Dra. Marina e o acompanhamento fotográfico de 90 dias é aberto na ficha da paciente.</p>
+          <button onclick="mostrarTela('evolucao-em-fotos')" class="mt-3 text-xs oep-gold hover:underline">Ver protocolo de fotos →</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="oepCheckout" class="hidden fixed inset-0 z-40 bg-black/80 flex items-center justify-center px-4">
+      <div class="oep-card w-full max-w-lg p-6">
+        <div class="flex justify-between items-start mb-5">
+          <div>
+            <h3 class="text-xl font-semibold">Checkout</h3>
+            <p class="text-xs text-[#8a8a8a]">Renata Albuquerque Mendes · CPF 341.882.109-55</p>
+          </div>
+          <button onclick="orcamento_e_pagamento_fechar()" class="text-[#8a8a8a] hover:text-[#D4AF37] text-xl leading-none">×</button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mb-5" id="oepMetodos">
+          <button onclick="orcamento_e_pagamento_metodo('cartao',this)" class="oep-btn py-2.5 text-xs">💳 Cartão</button>
+          <button onclick="orcamento_e_pagamento_metodo('pix',this)" class="oep-ghost py-2.5 text-xs">⚡ Pix</button>
+          <button onclick="orcamento_e_pagamento_metodo('link',this)" class="oep-ghost py-2.5 text-xs">🔗 Link</button>
+        </div>
+
+        <div id="oepFormCartao" class="space-y-3">
+          <input oninput="orcamento_e_pagamento_espelhar('nomeCartao',this.value)" placeholder="Nome impresso no cartão" class="w-full bg-[#0A0A0A] border border-[#333] rounded-lg px-3 py-2.5 text-sm focus:border-[#D4AF37] outline-none">
+          <input oninput="orcamento_e_pagamento_espelhar('numCartao',this.value)" placeholder="0000 0000 0000 0000" class="w-full bg-[#0A0A0A] border border-[#333] rounded-lg px-3 py-2.5 text-sm focus:border-[#D4AF37] outline-none">
+          <div class="grid grid-cols-2 gap-3">
+            <input placeholder="Validade 12/29" class="bg-[#0A0A0A] border border-[#333] rounded-lg px-3 py-2.5 text-sm focus:border-[#D4AF37] outline-none">
+            <input placeholder="CVV" class="bg-[#0A0A0A] border border-[#333] rounded-lg px-3 py-2.5 text-sm focus:border-[#D4AF37] outline-none">
+          </div>
+          <div class="bg-[#0A0A0A] border border-[#262626] rounded-lg p-3 text-xs text-[#9a9a9a]">
+            <p>Titular: <span class="oep-gold" id="nomeCartao">—</span></p>
+            <p class="mt-1">Cartão: <span class="oep-gold" id="numCartao">—</span></p>
+          </div>
+        </div>
+
+        <div id="oepFormPix" class="hidden text-center">
+          <div class="mx-auto w-40 h-40 rounded-lg bg-[#FAFAFA] flex items-center justify-center text-[#0A0A0A] text-5xl">▣</div>
+          <p class="mt-3 text-xs text-[#9a9a9a]">Copia e cola: <span class="oep-gold break-all">00020126BR.GOV.BCB.PIX2418SPERANDIO</span></p>
+          <p class="text-xs text-[#8a8a8a] mt-1">Expira em 29:44 · desconto à vista já aplicado</p>
+        </div>
+
+        <div id="oepFormLink" class="hidden space-y-3">
+          <p class="text-sm text-[#c9c9c9]">Link seguro gerado para envio à paciente:</p>
+          <div class="bg-[#0A0A0A] border border-[#262626] rounded-lg p-3 text-xs oep-gold break-all">pag.clinicasperandio.com.br/o/2418-renata</div>
+          <label class="flex items-center gap-2 text-xs text-[#9a9a9a]"><input type="checkbox" checked class="accent-[#D4AF37]"> Enviar por WhatsApp (11) 98832-4471</label>
+          <label class="flex items-center gap-2 text-xs text-[#9a9a9a]"><input type="checkbox" class="accent-[#D4AF37]"> Enviar cópia por e-mail</label>
+        </div>
+
+        <div class="flex justify-between items-center border-t border-[#262626] mt-5 pt-4">
+          <div>
+            <p class="text-xs text-[#8a8a8a]">Total a cobrar</p>
+            <p class="text-lg font-semibold oep-gold" id="oepTotalCheckout">R$ 0,00</p>
+          </div>
+          <button onclick="orcamento_e_pagamento_confirmar()" class="oep-btn px-6 py-3 text-sm">Confirmar pagamento</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="oepSucesso" class="hidden fixed inset-0 z-40 bg-black/85 flex items-center justify-center px-4">
+      <div class="oep-card w-full max-w-md p-7 text-center">
+        <div class="mx-auto w-14 h-14 rounded-full bg-[#D4AF37] text-[#0A0A0A] flex items-center justify-center text-3xl mb-4">✓</div>
+        <h3 class="text-xl font-semibold mb-1">Pagamento aprovado</h3>
+        <p class="text-sm text-[#9a9a9a]" id="oepSucessoTxt">—</p>
+        <div class="text-left bg-[#0A0A0A] border border-[#262626] rounded-xl p-4 mt-5 space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-[#8a8a8a]">1ª sessão</span><span class="oep-gold">Ter, 18/06 · 14h30</span></div>
+          <div class="flex justify-between"><span class="text-[#8a8a8a]">Sala</span><span>Consultório 2 · Itaim</span></div>
+          <div class="flex justify-between"><span class="text-[#8a8a8a]">Acompanhamento</span><span>Fotos D0, D7, D30, D90</span></div>
+          <div class="flex justify-between"><span class="text-[#8a8a8a]">Recibo</span><span>Enviado no WhatsApp</span></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mt-5">
+          <button onclick="mostrarTela('agenda-de-consultas')" class="oep-btn py-2.5 text-sm">Ver na agenda</button>
+          <button onclick="mostrarTela('ficha-do-paciente')" class="oep-ghost py-2.5 text-sm">Abrir ficha</button>
+        </div>
+        <button onclick="mostrarTela('painel-do-profissional')" class="mt-3 text-xs text-[#8a8a8a] hover:text-[#D4AF37]">Voltar ao painel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const oepCatalogo = [
+      {id:1,cat:'hof',nome:'Preenchimento de Terço Médio',desc:'Ácido hialurônico Restylane Lyft · 2ml, cânula 22G',sessoes:'1 sessão · retorno em 15 dias',preco:3400},
+      {id:2,cat:'hof',nome:'Toxina Botulínica Face Superior',desc:'Botox Allergan · glabela, frontal e periorbital',sessoes:'1 sessão · manutenção 5 meses',preco:1850},
+      {id:3,cat:'hof',nome:'Bioestimulador de Colágeno',desc:'Sculptra · 2 frascos, terço inferior e mandíbula',sessoes:'3 sessões · intervalo de 30 dias',preco:5600},
+      {id:4,cat:'cirurgia',nome:'Rinoplastia Estruturada',desc:'Técnica aberta, enxerto de cartilagem septal',sessoes:'Centro cirúrgico · 90 dias de acompanhamento',preco:28500},
+      {id:5,cat:'cirurgia',nome:'Blefaroplastia Superior',desc:'Ambulatorial com sedação · anestesista incluso',sessoes:'1 procedimento · 4 retornos',preco:12400},
+      {id:6,cat:'protocolo',nome:'Protocolo Full Face 90 dias',desc:'Skinbooster + laser fracionado + acompanhamento fotográfico',sessoes:'4 sessões · avaliação laboratorial inclusa',preco:9200}
+    ];
+    let oepSel = [1,3];
+    let oepMetodo = 'cartao';
+
+    const oepBRL = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+    function orcamento_e_pagamento_render(filtro){
+      const alvo = document.getElementById('oepCatalogo');
+      alvo.innerHTML = oepCatalogo.filter(p=>!filtro||filtro==='todos'||p.cat===filtro).map(p=>{
+        const on = oepSel.includes(p.id);
+        return `<div onclick="orcamento_e_pagamento_toggle(${p.id})" class="oep-card p-4 cursor-pointer transition ${on?'border-[#D4AF37] bg-[#D4AF37]/[0.06]':'hover:border-[#444]'}">
+          <div class="flex justify-between items-start gap-3">
+            <div>
+              <p class="oep-tag">${p.cat==='hof'?'Harmonização':p.cat==='cirurgia'?'Cirurgia da face':'Protocolo'}</p>
+              <h3 class="font-semibold text-[15px] mt-1">${p.nome}</h3>
+            </div>
+            <span class="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs ${on?'bg-[#D4AF37] text-[#0A0A0A]':'border border-[#444] text-[#555]'}">${on?'✓':'+'}</span>
+          </div>
+          <p class="text-xs text-[#8f8f8f] mt-2 leading-relaxed">${p.desc}</p>
+          <p class="text-xs text-[#6e6e6e] mt-2">${p.sessoes}</p>
+          <p class="text-lg font-semibold oep-gold mt-3">${oepBRL(p.preco)}</p>
+        </div>`;
+      }).join('');
+    }
+
+    function orcamento_e_pagamento_filtrar(f,btn){
+      document.querySelectorAll('#oepFiltros button').forEach(b=>b.className='oep-ghost px-4 py-2 text-xs');
+      btn.className='oep-btn px-4 py-2 text-xs';
+      orcamento_e_pagamento_render(f);
+    }
+
+    function orcamento_e_pagamento_toggle(id){
+      oepSel = oepSel.includes(id) ? oepSel.filter(i=>i!==id) : [...oepSel,id];
+      const ativo = document.querySelector('#oepFiltros .oep-btn');
+      const map = {'Todos':'todos','HOF':'hof','Cirurgia da face':'cirurgia','Protocolos':'protocolo'};
+      orcamento_e_pagamento_render(map[ativo?ativo.textContent.trim():'Todos']);
+      orcamento_e_pagamento_calcular();
+    }
+
+    function orcamento_e_pagamento_calcular(){
+      const itens = oepCatalogo.filter(p=>oepSel.includes(p.id));
+      const box = document.getElementById('oepItens');
+      box.innerHTML = itens.length ? itens.map(p=>`<div class="flex justify-between items-start gap-2 text-sm">
+        <div><p class="font-medium">${p.nome}</p><p class="text-xs text-[#7a7a7a]">${p.sessoes}</p></div>
+        <div class="text-right shrink-0"><p>${oepBRL(p.preco)}</p>
+        <button onclick="orcamento_e_pagamento_toggle(${p.id})" class="text-[10px] text-[#8a8a8a] hover:text-[#D4AF37]">remover</button></div></div>`).join('')
+        : '<p class="text-sm text-[#7a7a7a]">Selecione procedimentos no catálogo ao lado.</p>';
+
+      const sub = itens.reduce((s,p)=>s+p.preco,0);
+      const desc = +document.getElementById('oepDesconto').value;
+      const eco = sub*desc/100;
+      const parc = +document.getElementById('oepParcelas').value;
+      let total = sub-eco;
+      if(parc===10) total = total*1.12;
+      document.getElementById('oepSubtotal').textContent = oepBRL(sub);
+      document.getElementById('oepEconomia').textContent = '- '+oepBRL(eco);
+      document.getElementById('oepTotal').textContent = oepBRL(total);
+      document.getElementById('oepTotalCheckout').textContent = oepBRL(total);
+      document.getElementById('oepParcelaTxt').textContent = parc===1 ? 'pagamento à vista' : `${parc}x de ${oepBRL(total/parc)}`;
+    }
+
+    function orcamento_e_pagamento_whats(){
+      if(!oepSel.length) return orcamento_e_pagamento_msg('Selecione ao menos um procedimento.');
+      orcamento_e_pagamento_msg('Orçamento enviado para Renata no WhatsApp (11) 98832-4471 ✓');
+    }
+    function orcamento_e_pagamento_msg(t){
+      const a = document.getElementById('oepAviso');
+      a.textContent = t; a.classList.remove('hidden');
+      setTimeout(()=>a.classList.add('hidden'),3500);
+    }
+    function orcamento_e_pagamento_checkout(){
+      if(!oepSel.length) return orcamento_e_pagamento_msg('Selecione ao menos um procedimento.');
+      document.getElementById('oepCheckout').classList.remove('hidden');
+    }
+    function orcamento_e_pagamento_fechar(){ document.getElementById('oepCheckout').classList.add('hidden'); }
+    function orcamento_e_pagamento_metodo(m,btn){
+      oepMetodo = m;
+      document.querySelectorAll('#oepMetodos button').forEach(b=>b.className='oep-ghost py-2.5 text-xs');
+      btn.className='oep-btn py-2.5 text-xs';
+      document.getElementById('oepFormCartao').classList.toggle('hidden',m!=='cartao');
+      document.getElementById('oepFormPix').classList.toggle('hidden',m!=='pix');
+      document.getElementById('oepFormLink').classList.toggle('hidden',m!=='link');
+    }
+    function orcamento_e_pagamento_espelhar(id,v){ document.getElementById(id).textContent = v || '—'; }
+    function orcamento_e_pagamento_confirmar(){
+      const total = document.getElementById('oepTotal').textContent;
+      const parc = document.getElementById('oepParcelaTxt').textContent;
+      const nome = {cartao:'Cartão de crédito',pix:'Pix',link:'Link de pagamento'}[oepMetodo];
+      document.getElementById('oepSucessoTxt').textContent = `${nome} · ${total} · ${parc}`;
+      document.getElementById('oepCheckout').classList.add('hidden');
+      document.getElementById('oepSucesso').classList.remove('hidden');
+    }
+
+    orcamento_e_pagamento_render('todos');
+    orcamento_e_pagamento_calcular();
+  </script>
+</section>
+
     <!-- TELAS -->
     </main>
 
