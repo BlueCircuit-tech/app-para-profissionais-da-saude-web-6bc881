@@ -888,6 +888,286 @@
   </script>
 </section>
 
+    <section data-tela="evolucao-em-fotos" class="hidden">
+  <style>
+    .ef-card{background:#111111;border:1px solid #262626;border-radius:14px}
+    .ef-gold{color:#D4AF37}
+    .ef-btn{background:#D4AF37;color:#0A0A0A;font-weight:600;border-radius:10px;transition:.2s}
+    .ef-btn:hover{background:#e8c95a}
+    .ef-ghost{border:1px solid #3a3a3a;color:#FAFAFA;border-radius:10px;transition:.2s}
+    .ef-ghost:hover{border-color:#D4AF37;color:#D4AF37}
+    .ef-thumb{border:2px solid transparent;border-radius:10px;overflow:hidden;cursor:pointer;transition:.2s}
+    .ef-thumb:hover{border-color:#6b5a1e}
+    .ef-thumb.ativa{border-color:#D4AF37}
+  </style>
+
+  <div class="px-8 py-6 max-w-[1400px] mx-auto text-[#FAFAFA]">
+
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div>
+        <div class="flex items-center gap-2 text-xs text-neutral-500 mb-1">
+          <button onclick="mostrarTela('painel-do-profissional')" class="hover:text-[#D4AF37]">Painel</button>
+          <span>/</span>
+          <button onclick="mostrarTela('ficha-do-paciente')" class="hover:text-[#D4AF37]">Ficha do Paciente</button>
+          <span>/</span>
+          <span class="ef-gold">Evolução em Fotos</span>
+        </div>
+        <h1 class="text-2xl font-semibold tracking-tight">Evolução em Fotos — <span class="ef-gold">Renata Villaça Marques</span></h1>
+        <p class="text-sm text-neutral-400 mt-1">Preenchimento HOF terço médio + rinomodelação · Procedimento em 14/03/2024 · <span id="ef_dias" class="text-[#D4AF37]">Dia 62 de 90</span></p>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="mostrarTela('ficha-do-paciente')" class="ef-ghost px-4 py-2 text-sm">Ver ficha completa</button>
+        <button onclick="evolucao_em_fotos_abrirUpload()" class="ef-btn px-4 py-2 text-sm">+ Foto do dia</button>
+      </div>
+    </div>
+
+    <div class="ef-card p-4 mb-6">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-neutral-400">Linha do tempo — 90 dias</h2>
+        <div class="flex gap-2 text-xs">
+          <button onclick="evolucao_em_fotos_filtrar('todas',this)" class="ef-filtro ef-btn px-3 py-1.5">Todas</button>
+          <button onclick="evolucao_em_fotos_filtrar('frontal',this)" class="ef-filtro ef-ghost px-3 py-1.5">Frontal</button>
+          <button onclick="evolucao_em_fotos_filtrar('perfil',this)" class="ef-filtro ef-ghost px-3 py-1.5">Perfil 45°</button>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="absolute left-0 right-0 top-[52px] h-px bg-[#2b2b2b]"></div>
+        <div id="ef_timeline" class="relative flex gap-4 overflow-x-auto pb-2"></div>
+      </div>
+      <p class="text-xs text-neutral-500 mt-3">Clique em duas datas para montar o comparativo. Selecionadas: <span id="ef_sel" class="ef-gold">D0 · D60</span></p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-6">
+
+      <div class="ef-card p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-neutral-400">Comparativo antes × depois</h2>
+          <div class="flex gap-2">
+            <button onclick="evolucao_em_fotos_modo('slider',this)" class="ef-modo ef-btn px-3 py-1.5 text-xs">Deslizante</button>
+            <button onclick="evolucao_em_fotos_modo('lado',this)" class="ef-modo ef-ghost px-3 py-1.5 text-xs">Lado a lado</button>
+          </div>
+        </div>
+
+        <div id="ef_slider_wrap" class="relative select-none rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#262626]" style="aspect-ratio:16/10">
+          <div id="ef_img_depois" class="absolute inset-0 flex items-center justify-center text-center"
+               style="background:linear-gradient(140deg,#1c1a12,#2c2617)">
+            <div>
+              <div class="text-5xl mb-2">🙂</div>
+              <p class="text-xs uppercase tracking-widest text-[#D4AF37]">Depois</p>
+              <p id="ef_lbl_depois" class="text-sm text-neutral-300">13/05/2024 · D60</p>
+            </div>
+          </div>
+          <div id="ef_img_antes" class="absolute inset-0 flex items-center justify-center text-center overflow-hidden"
+               style="background:linear-gradient(140deg,#15181c,#22262b);width:50%">
+            <div class="absolute inset-0 flex items-center justify-center" style="width:100vw;max-width:none">
+              <div>
+                <div class="text-5xl mb-2">😐</div>
+                <p class="text-xs uppercase tracking-widest text-neutral-400">Antes</p>
+                <p id="ef_lbl_antes" class="text-sm text-neutral-300">14/03/2024 · D0</p>
+              </div>
+            </div>
+          </div>
+          <div id="ef_handle" class="absolute top-0 bottom-0 w-[2px] bg-[#D4AF37]" style="left:50%">
+            <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 left-1/2 w-9 h-9 rounded-full bg-[#D4AF37] text-[#0A0A0A] flex items-center justify-center text-xs font-bold">◄►</div>
+          </div>
+          <div class="absolute bottom-3 left-3 text-[11px] px-2 py-1 rounded bg-black/60 border border-[#333]">Frontal · luz padronizada · 4000K</div>
+        </div>
+
+        <div id="ef_lado" class="hidden grid grid-cols-2 gap-3">
+          <div class="rounded-xl border border-[#262626] flex flex-col items-center justify-center py-16" style="background:linear-gradient(140deg,#15181c,#22262b)">
+            <div class="text-5xl mb-2">😐</div>
+            <p class="text-xs uppercase tracking-widest text-neutral-400">Antes</p>
+            <p id="ef_lbl_antes2" class="text-sm text-neutral-300">14/03/2024 · D0</p>
+          </div>
+          <div class="rounded-xl border border-[#3a3320] flex flex-col items-center justify-center py-16" style="background:linear-gradient(140deg,#1c1a12,#2c2617)">
+            <div class="text-5xl mb-2">🙂</div>
+            <p class="text-xs uppercase tracking-widest text-[#D4AF37]">Depois</p>
+            <p id="ef_lbl_depois2" class="text-sm text-neutral-300">13/05/2024 · D60</p>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <input id="ef_range" type="range" min="0" max="100" value="50" oninput="evolucao_em_fotos_mover(this.value)" class="w-full accent-[#D4AF37]">
+          <div class="flex justify-between text-[11px] text-neutral-500 mt-1"><span>100% antes</span><span>Divisor</span><span>100% depois</span></div>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mt-5">
+          <button onclick="evolucao_em_fotos_compartilhar()" class="ef-btn px-4 py-2 text-sm">Compartilhar com a paciente (WhatsApp)</button>
+          <button onclick="evolucao_em_fotos_mover(50)" class="ef-ghost px-4 py-2 text-sm">Centralizar divisor</button>
+          <button onclick="mostrarTela('orcamento-e-pagamento')" class="ef-ghost px-4 py-2 text-sm">Gerar orçamento de retoque</button>
+        </div>
+        <p id="ef_msg_share" class="hidden mt-3 text-sm rounded-lg px-3 py-2 border border-[#3a3320] bg-[#1a1710] ef-gold"></p>
+      </div>
+
+      <div class="space-y-6">
+
+        <div id="ef_upload" class="hidden ef-card p-5">
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-3">Nova foto — 15/05/2024</h3>
+          <div onclick="evolucao_em_fotos_simularArquivo()" class="cursor-pointer border border-dashed border-[#3a3a3a] hover:border-[#D4AF37] rounded-xl py-8 text-center text-sm text-neutral-400">
+            📷 Clique para selecionar a imagem<br><span id="ef_arquivo" class="text-xs text-neutral-600">IMG_frontal_D62.jpg</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mt-3">
+            <select id="ef_angulo" class="bg-[#0A0A0A] border border-[#2f2f2f] rounded-lg px-3 py-2 text-sm">
+              <option>Frontal</option><option>Perfil 45° direito</option><option>Perfil 90° esquerdo</option>
+            </select>
+            <select id="ef_marco" class="bg-[#0A0A0A] border border-[#2f2f2f] rounded-lg px-3 py-2 text-sm">
+              <option>D62 — acompanhamento</option><option>D75 — acompanhamento</option><option>D90 — alta fotográfica</option>
+            </select>
+          </div>
+          <div class="flex gap-2 mt-3">
+            <button onclick="evolucao_em_fotos_salvarFoto()" class="ef-btn px-4 py-2 text-sm flex-1">Salvar na linha do tempo</button>
+            <button onclick="evolucao_em_fotos_abrirUpload(false)" class="ef-ghost px-4 py-2 text-sm">Cancelar</button>
+          </div>
+        </div>
+
+        <div class="ef-card p-5">
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-3">Observação clínica</h3>
+          <textarea id="ef_obs" rows="4" placeholder="Ex.: Redução de edema em região malar, simetria mantida. Manter skincare noturno."
+            class="w-full bg-[#0A0A0A] border border-[#2f2f2f] rounded-lg px-3 py-2 text-sm placeholder:text-neutral-600 focus:border-[#D4AF37] outline-none"></textarea>
+          <div class="flex gap-2 mt-3">
+            <button onclick="evolucao_em_fotos_salvarObs()" class="ef-btn px-4 py-2 text-sm">Registrar no prontuário</button>
+            <button onclick="mostrarTela('agenda-de-consultas')" class="ef-ghost px-4 py-2 text-sm">Agendar D90</button>
+          </div>
+          <ul id="ef_lista_obs" class="mt-4 space-y-3 text-sm">
+            <li class="border-l-2 border-[#D4AF37] pl-3">
+              <p class="text-neutral-300">Edema residual mínimo em terço médio. Ácido hialurônico bem integrado, sem nódulos à palpação.</p>
+              <span class="text-[11px] text-neutral-500">Dra. Helena Braga · 13/05/2024 · D60</span>
+            </li>
+            <li class="border-l-2 border-[#3a3a3a] pl-3">
+              <p class="text-neutral-300">Equimose leve em dorso nasal, orientada compressa fria e arnica tópica.</p>
+              <span class="text-[11px] text-neutral-500">Dra. Helena Braga · 21/03/2024 · D7</span>
+            </li>
+            <li class="border-l-2 border-[#3a3a3a] pl-3">
+              <p class="text-neutral-300">Fotos padronizadas pré-procedimento em 3 ângulos. Termo de imagem assinado.</p>
+              <span class="text-[11px] text-neutral-500">Camila Foureaux (equipe) · 14/03/2024 · D0</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="ef-card p-5">
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-3">Adesão ao protocolo</h3>
+          <div class="space-y-3 text-sm">
+            <div>
+              <div class="flex justify-between mb-1"><span class="text-neutral-300">Fotos enviadas</span><span class="ef-gold">7 de 9</span></div>
+              <div class="h-1.5 bg-[#242424] rounded-full"><div class="h-1.5 rounded-full bg-[#D4AF37]" style="width:78%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-1"><span class="text-neutral-300">Skincare pós-HOF</span><span class="ef-gold">92%</span></div>
+              <div class="h-1.5 bg-[#242424] rounded-full"><div class="h-1.5 rounded-full bg-[#D4AF37]" style="width:92%"></div></div>
+            </div>
+          </div>
+          <button onclick="evolucao_em_fotos_lembrete()" class="mt-4 w-full ef-ghost px-4 py-2 text-sm">Enviar lembrete de foto (WhatsApp)</button>
+          <p id="ef_msg_lembrete" class="hidden mt-2 text-xs ef-gold"></p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var evolucao_em_fotos_fotos = [
+      {id:'d0',  data:'14/03/2024', dia:'D0',  tag:'Pré-procedimento', ang:'frontal', emoji:'😐'},
+      {id:'d7',  data:'21/03/2024', dia:'D7',  tag:'Edema/equimose',   ang:'frontal', emoji:'😕'},
+      {id:'d30', data:'13/04/2024', dia:'D30', tag:'Integração',       ang:'perfil',  emoji:'🙂'},
+      {id:'d45', data:'28/04/2024', dia:'D45', tag:'Controle',         ang:'frontal', emoji:'🙂'},
+      {id:'d60', data:'13/05/2024', dia:'D60', tag:'Resultado parcial',ang:'frontal', emoji:'🙂'}
+    ];
+    var evolucao_em_fotos_sel = ['d0','d60'];
+    var evolucao_em_fotos_filtro = 'todas';
+
+    function evolucao_em_fotos_render(){
+      var wrap = document.getElementById('ef_timeline');
+      var html = '';
+      evolucao_em_fotos_fotos.forEach(function(f){
+        if(evolucao_em_fotos_filtro!=='todas' && f.ang!==evolucao_em_fotos_filtro) return;
+        var at = evolucao_em_fotos_sel.indexOf(f.id)>-1 ? ' ativa' : '';
+        html += '<div class="min-w-[150px]"><div onclick="evolucao_em_fotos_selecionar(\''+f.id+'\')" class="ef-thumb'+at+'">'+
+          '<div class="h-24 flex items-center justify-center text-3xl" style="background:linear-gradient(140deg,#181818,#252525)">'+f.emoji+'</div>'+
+          '<div class="px-2 py-2 bg-[#141414]"><p class="text-xs font-semibold text-[#D4AF37]">'+f.dia+' · '+f.data+'</p>'+
+          '<p class="text-[11px] text-neutral-500">'+f.tag+'</p></div></div></div>';
+      });
+      wrap.innerHTML = html || '<p class="text-sm text-neutral-500 py-8">Nenhuma foto neste ângulo.</p>';
+      var a = evolucao_em_fotos_busca(evolucao_em_fotos_sel[0]);
+      var b = evolucao_em_fotos_busca(evolucao_em_fotos_sel[1]);
+      document.getElementById('ef_sel').textContent = a.dia+' · '+b.dia;
+      document.getElementById('ef_lbl_antes').textContent = a.data+' · '+a.dia;
+      document.getElementById('ef_lbl_antes2').textContent = a.data+' · '+a.dia;
+      document.getElementById('ef_lbl_depois').textContent = b.data+' · '+b.dia;
+      document.getElementById('ef_lbl_depois2').textContent = b.data+' · '+b.dia;
+    }
+    function evolucao_em_fotos_busca(id){
+      for(var i=0;i<evolucao_em_fotos_fotos.length;i++){ if(evolucao_em_fotos_fotos[i].id===id) return evolucao_em_fotos_fotos[i]; }
+      return evolucao_em_fotos_fotos[0];
+    }
+    function evolucao_em_fotos_selecionar(id){
+      if(evolucao_em_fotos_sel.indexOf(id)>-1) return;
+      evolucao_em_fotos_sel = [evolucao_em_fotos_sel[1], id];
+      evolucao_em_fotos_render();
+    }
+    function evolucao_em_fotos_filtrar(f, el){
+      evolucao_em_fotos_filtro = f;
+      document.querySelectorAll('.ef-filtro').forEach(function(b){ b.className='ef-filtro ef-ghost px-3 py-1.5'; });
+      el.className = 'ef-filtro ef-btn px-3 py-1.5';
+      evolucao_em_fotos_render();
+    }
+    function evolucao_em_fotos_mover(v){
+      document.getElementById('ef_img_antes').style.width = v+'%';
+      document.getElementById('ef_handle').style.left = v+'%';
+      document.getElementById('ef_range').value = v;
+    }
+    function evolucao_em_fotos_modo(m, el){
+      document.querySelectorAll('.ef-modo').forEach(function(b){ b.className='ef-modo ef-ghost px-3 py-1.5 text-xs'; });
+      el.className = 'ef-modo ef-btn px-3 py-1.5 text-xs';
+      document.getElementById('ef_slider_wrap').classList.toggle('hidden', m!=='slider');
+      document.getElementById('ef_lado').classList.toggle('hidden', m==='slider');
+      document.getElementById('ef_lado').classList.toggle('grid', m!=='slider');
+      document.getElementById('ef_range').disabled = (m!=='slider');
+    }
+    function evolucao_em_fotos_abrirUpload(abrir){
+      var el = document.getElementById('ef_upload');
+      if(abrir===false){ el.classList.add('hidden'); return; }
+      el.classList.remove('hidden');
+    }
+    function evolucao_em_fotos_simularArquivo(){
+      document.getElementById('ef_arquivo').textContent = 'IMG_2024-05-15_frontal.jpg selecionado ✓';
+      document.getElementById('ef_arquivo').className = 'text-xs text-[#D4AF37]';
+    }
+    function evolucao_em_fotos_salvarFoto(){
+      var ang = document.getElementById('ef_angulo').value;
+      var marco = document.getElementById('ef_marco').value.split(' ')[0];
+      evolucao_em_fotos_fotos.push({id:'n'+evolucao_em_fotos_fotos.length, data:'15/05/2024', dia:marco,
+        tag:ang, ang:(ang==='Frontal'?'frontal':'perfil'), emoji:'😊'});
+      evolucao_em_fotos_sel = [evolucao_em_fotos_sel[1], 'n'+(evolucao_em_fotos_fotos.length-1)];
+      evolucao_em_fotos_abrirUpload(false);
+      document.getElementById('ef_dias').textContent = 'Dia 62 de 90 · 8 fotos';
+      evolucao_em_fotos_render();
+    }
+    function evolucao_em_fotos_salvarObs(){
+      var t = document.getElementById('ef_obs').value.trim();
+      if(!t){ document.getElementById('ef_obs').classList.add('border-[#D4AF37]'); return; }
+      var li = document.createElement('li');
+      li.className = 'border-l-2 border-[#D4AF37] pl-3';
+      li.innerHTML = '<p class="text-neutral-300">'+t+'</p><span class="text-[11px] text-neutral-500">Dra. Helena Braga · 15/05/2024 · D62</span>';
+      var lista = document.getElementById('ef_lista_obs');
+      lista.insertBefore(li, lista.firstChild);
+      document.getElementById('ef_obs').value = '';
+    }
+    function evolucao_em_fotos_compartilhar(){
+      var a = evolucao_em_fotos_busca(evolucao_em_fotos_sel[0]);
+      var b = evolucao_em_fotos_busca(evolucao_em_fotos_sel[1]);
+      var m = document.getElementById('ef_msg_share');
+      m.textContent = 'Comparativo '+a.dia+' × '+b.dia+' enviado para Renata (+55 11 98432-7710) no WhatsApp com link protegido por senha.';
+      m.classList.remove('hidden');
+    }
+    function evolucao_em_fotos_lembrete(){
+      var m = document.getElementById('ef_msg_lembrete');
+      m.textContent = 'Lembrete de foto D75 agendado para 28/05/2024, 09h.';
+      m.classList.remove('hidden');
+    }
+    evolucao_em_fotos_render();
+  </script>
+</section>
+
     <!-- TELAS -->
     </main>
 
