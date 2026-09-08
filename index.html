@@ -358,6 +358,249 @@
   </script>
 </section>
 
+    <section data-tela="agenda-de-consultas" class="hidden">
+  <style>
+    .ag-chip{padding:.25rem .7rem;border-radius:9999px;font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+    .ag-slot{border:1px dashed #2a2a2a;border-radius:.5rem;height:58px;display:flex;align-items:center;justify-content:center;color:#4a4a4a;font-size:.7rem;cursor:pointer;transition:.15s}
+    .ag-slot:hover{border-color:#D4AF37;color:#D4AF37;background:rgba(212,175,55,.06)}
+    .ag-bloco{border-radius:.5rem;height:58px;padding:.4rem .55rem;cursor:pointer;border-left:3px solid;overflow:hidden;transition:.15s}
+    .ag-bloco:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.5)}
+    .ag-tab{padding:.4rem 1rem;border-radius:.4rem;font-size:.8rem;font-weight:600;cursor:pointer}
+  </style>
+
+  <div class="px-8 py-7 max-w-[1500px]">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+      <div>
+        <p class="text-[#D4AF37] text-[11px] tracking-[.25em] uppercase mb-1">Clínica · Harmonização &amp; Cirurgia da Face</p>
+        <h1 class="text-3xl font-semibold text-[#FAFAFA]" style="font-family:'Playfair Display',Georgia,serif">Agenda de Consultas</h1>
+        <p class="text-sm text-neutral-500 mt-1" id="ag_periodo">Semana de 10 a 15 de março de 2025 · 14 atendimentos</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="agenda_de_consultas_abrirNovo('Seg 10','09:00')" class="bg-[#D4AF37] text-[#0A0A0A] px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#e8c65a]">+ Novo agendamento</button>
+        <button onclick="mostrarTela('painel-do-profissional')" class="border border-neutral-700 text-neutral-300 px-4 py-2.5 rounded-lg text-sm hover:border-[#D4AF37] hover:text-[#D4AF37]">Painel</button>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 mb-5 bg-[#111] border border-neutral-800 rounded-xl px-4 py-3">
+      <div class="flex gap-1 bg-[#0A0A0A] p-1 rounded-lg" id="ag_visoes">
+        <span class="ag-tab bg-[#D4AF37] text-[#0A0A0A]" data-v="Dia" onclick="agenda_de_consultas_visao(this)">Dia</span>
+        <span class="ag-tab text-neutral-400" data-v="Semana" onclick="agenda_de_consultas_visao(this)">Semana</span>
+        <span class="ag-tab text-neutral-400" data-v="Mês" onclick="agenda_de_consultas_visao(this)">Mês</span>
+      </div>
+      <select id="ag_prof" onchange="agenda_de_consultas_filtrar()" class="bg-[#0A0A0A] border border-neutral-700 text-neutral-200 text-sm rounded-lg px-3 py-2 focus:border-[#D4AF37] outline-none">
+        <option>Todos os profissionais</option>
+        <option>Dra. Marina Vasconcelos — HOF</option>
+        <option>Dr. Rafael Aguiar — Cirurgia da Face</option>
+        <option>Dra. Letícia Prado — Avaliação</option>
+      </select>
+      <select id="ag_tipo" onchange="agenda_de_consultas_filtrar()" class="bg-[#0A0A0A] border border-neutral-700 text-neutral-200 text-sm rounded-lg px-3 py-2 focus:border-[#D4AF37] outline-none">
+        <option>Todos os procedimentos</option>
+        <option>HOF</option><option>Cirurgia</option><option>Retorno</option><option>Avaliação</option>
+      </select>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-4 text-[11px] text-neutral-400">
+        <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-sm bg-[#D4AF37] inline-block"></i>HOF</span>
+        <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-sm bg-[#8B5E1F] inline-block"></i>Cirurgia</span>
+        <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-sm bg-[#3F6B5B] inline-block"></i>Retorno</span>
+        <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-sm bg-[#5A5A5A] inline-block"></i>Avaliação</span>
+      </div>
+    </div>
+
+    <div class="bg-[#111] border border-neutral-800 rounded-xl p-5 overflow-x-auto">
+      <div class="min-w-[1080px]">
+        <div class="grid grid-cols-[70px_repeat(5,1fr)] gap-2 mb-2 text-center">
+          <div></div>
+          <div class="text-neutral-300 text-sm font-semibold">Seg <span class="text-neutral-600">10/03</span></div>
+          <div class="text-neutral-300 text-sm font-semibold">Ter <span class="text-neutral-600">11/03</span></div>
+          <div class="text-[#D4AF37] text-sm font-semibold">Qua <span class="opacity-60">12/03</span></div>
+          <div class="text-neutral-300 text-sm font-semibold">Qui <span class="text-neutral-600">13/03</span></div>
+          <div class="text-neutral-300 text-sm font-semibold">Sex <span class="text-neutral-600">14/03</span></div>
+        </div>
+        <div id="ag_grade" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4 mt-5">
+      <div class="bg-[#111] border border-neutral-800 rounded-xl p-4">
+        <p class="text-[11px] uppercase tracking-widest text-neutral-500">Confirmados na semana</p>
+        <p class="text-2xl font-semibold text-[#FAFAFA] mt-1">11 <span class="text-sm text-neutral-500">de 14</span></p>
+      </div>
+      <div class="bg-[#111] border border-neutral-800 rounded-xl p-4">
+        <p class="text-[11px] uppercase tracking-widest text-neutral-500">Lembretes WhatsApp enviados</p>
+        <p class="text-2xl font-semibold text-[#D4AF37] mt-1" id="ag_lembretes">9</p>
+      </div>
+      <div class="bg-[#111] border border-neutral-800 rounded-xl p-4 flex items-center justify-between">
+        <div>
+          <p class="text-[11px] uppercase tracking-widest text-neutral-500">Leads aguardando agenda</p>
+          <p class="text-2xl font-semibold text-[#FAFAFA] mt-1">6</p>
+        </div>
+        <button onclick="mostrarTela('funil-de-leads')" class="text-[#D4AF37] text-xs border border-[#D4AF37]/40 rounded-lg px-3 py-2 hover:bg-[#D4AF37]/10">Ver funil</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="ag_modal" class="hidden fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-6">
+    <div class="bg-[#121212] border border-neutral-800 rounded-2xl w-full max-w-lg p-6">
+      <div class="flex items-start justify-between mb-5">
+        <div>
+          <p class="text-[#D4AF37] text-[11px] tracking-[.25em] uppercase" id="ag_modal_tag">Novo agendamento</p>
+          <h3 class="text-xl text-[#FAFAFA] font-semibold mt-1" id="ag_modal_titulo">Quarta, 12/03 · 09:00</h3>
+        </div>
+        <button onclick="agenda_de_consultas_fechar()" class="text-neutral-500 hover:text-[#FAFAFA] text-xl leading-none">✕</button>
+      </div>
+      <div id="ag_modal_corpo"></div>
+    </div>
+  </div>
+
+  <script>
+    const agenda_de_consultas_cores = {
+      HOF:['#D4AF37','rgba(212,175,55,.14)','#0A0A0A'],
+      Cirurgia:['#8B5E1F','rgba(139,94,31,.18)','#FAFAFA'],
+      Retorno:['#3F6B5B','rgba(63,107,91,.18)','#FAFAFA'],
+      'Avaliação':['#5A5A5A','rgba(120,120,120,.15)','#FAFAFA']
+    };
+    let agenda_de_consultas_eventos = [
+      {h:'08:00',d:0,p:'Camila Ferraz',s:'Preenchimento labial',t:'HOF',prof:'Dra. Marina Vasconcelos — HOF',st:'Confirmado'},
+      {h:'09:00',d:2,p:'Renata Albuquerque',s:'Botox terço superior',t:'HOF',prof:'Dra. Marina Vasconcelos — HOF',st:'Confirmado'},
+      {h:'09:00',d:4,p:'Juliana Sampaio',s:'Avaliação inicial — lead Instagram',t:'Avaliação',prof:'Dra. Letícia Prado — Avaliação',st:'Aguardando'},
+      {h:'10:00',d:1,p:'Paulo Menezes',s:'Rinoplastia — pré-operatório',t:'Cirurgia',prof:'Dr. Rafael Aguiar — Cirurgia da Face',st:'Confirmado'},
+      {h:'11:00',d:3,p:'Beatriz Toledo',s:'Retorno 30 dias — foto',t:'Retorno',prof:'Dra. Marina Vasconcelos — HOF',st:'Confirmado'},
+      {h:'14:00',d:2,p:'Eduardo Lins',s:'Blefaroplastia — 2ª etapa',t:'Cirurgia',prof:'Dr. Rafael Aguiar — Cirurgia da Face',st:'Aguardando'},
+      {h:'15:00',d:0,p:'Fernanda Rocha',s:'Bioestimulador de colágeno',t:'HOF',prof:'Dra. Marina Vasconcelos — HOF',st:'Confirmado'},
+      {h:'16:00',d:4,p:'Marcos Antunes',s:'Retorno 90 dias — evolução',t:'Retorno',prof:'Dra. Marina Vasconcelos — HOF',st:'Confirmado'}
+    ];
+    const agenda_de_consultas_horas = ['08:00','09:00','10:00','11:00','14:00','15:00','16:00'];
+    const agenda_de_consultas_dias = ['Seg 10/03','Ter 11/03','Qua 12/03','Qui 13/03','Sex 14/03'];
+    let agenda_de_consultas_ctx = null;
+
+    function agenda_de_consultas_render(){
+      const fp = document.getElementById('ag_prof').value, ft = document.getElementById('ag_tipo').value;
+      let html = '';
+      agenda_de_consultas_horas.forEach(h=>{
+        html += '<div class="grid grid-cols-[70px_repeat(5,1fr)] gap-2 items-center"><div class="text-[11px] text-neutral-600 text-right pr-1">'+h+'</div>';
+        for(let d=0;d<5;d++){
+          const ev = agenda_de_consultas_eventos.find(e=>e.h===h&&e.d===d);
+          const visivel = ev && (fp.startsWith('Todos')||ev.prof===fp) && (ft.startsWith('Todos')||ev.t===ft);
+          if(visivel){
+            const c = agenda_de_consultas_cores[ev.t];
+            html += '<div class="ag-bloco" style="border-color:'+c[0]+';background:'+c[1]+'" onclick="agenda_de_consultas_abrirEvento(\''+h+'\','+d+')">'+
+              '<p class="text-[13px] text-[#FAFAFA] font-semibold truncate">'+ev.p+'</p>'+
+              '<p class="text-[11px] truncate" style="color:'+c[0]+'">'+ev.s+'</p>'+
+              '<p class="text-[10px] text-neutral-500 truncate">'+ev.st+' · '+ev.prof.split(' — ')[0]+'</p></div>';
+          } else {
+            html += '<div class="ag-slot" onclick="agenda_de_consultas_abrirNovo(\''+agenda_de_consultas_dias[d]+'\',\''+h+'\')">+ livre</div>';
+          }
+        }
+        html += '</div>';
+      });
+      document.getElementById('ag_grade').innerHTML = html;
+    }
+    function agenda_de_consultas_filtrar(){
+      agenda_de_consultas_render();
+      const fp=document.getElementById('ag_prof').value, ft=document.getElementById('ag_tipo').value;
+      const n=agenda_de_consultas_eventos.filter(e=>(fp.startsWith('Todos')||e.prof===fp)&&(ft.startsWith('Todos')||e.t===ft)).length;
+      document.getElementById('ag_periodo').textContent='Semana de 10 a 15 de março de 2025 · '+n+' atendimentos';
+    }
+    function agenda_de_consultas_visao(el){
+      [...document.querySelectorAll('#ag_visoes .ag-tab')].forEach(t=>{t.className='ag-tab text-neutral-400';});
+      el.className='ag-tab bg-[#D4AF37] text-[#0A0A0A]';
+      const v=el.dataset.v;
+      document.getElementById('ag_periodo').textContent = v==='Dia' ? 'Quarta, 12 de março de 2025 · 3 atendimentos'
+        : v==='Mês' ? 'Março de 2025 · 58 atendimentos' : 'Semana de 10 a 15 de março de 2025 · 14 atendimentos';
+    }
+    function agenda_de_consultas_abrir(){ document.getElementById('ag_modal').classList.remove('hidden'); }
+    function agenda_de_consultas_fechar(){ document.getElementById('ag_modal').classList.add('hidden'); }
+
+    function agenda_de_consultas_abrirNovo(dia,hora){
+      agenda_de_consultas_ctx={dia:dia,hora:hora};
+      document.getElementById('ag_modal_tag').textContent='Novo agendamento';
+      document.getElementById('ag_modal_titulo').textContent=dia+' · '+hora;
+      document.getElementById('ag_modal_corpo').innerHTML =
+        '<div class="space-y-4">'+
+        '<div><label class="text-[11px] uppercase tracking-widest text-neutral-500">Paciente</label>'+
+        '<select id="ag_np" class="w-full mt-1 bg-[#0A0A0A] border border-neutral-700 rounded-lg px-3 py-2.5 text-sm text-neutral-200 outline-none focus:border-[#D4AF37]">'+
+        '<option>Camila Ferraz</option><option>Juliana Sampaio</option><option>Paulo Menezes</option><option>Beatriz Toledo</option><option>Novo paciente — vindo do funil</option></select></div>'+
+        '<div class="grid grid-cols-2 gap-3">'+
+        '<div><label class="text-[11px] uppercase tracking-widest text-neutral-500">Serviço</label>'+
+        '<select id="ag_ns" class="w-full mt-1 bg-[#0A0A0A] border border-neutral-700 rounded-lg px-3 py-2.5 text-sm text-neutral-200 outline-none focus:border-[#D4AF37]">'+
+        '<option data-t="HOF">Preenchimento labial — R$ 1.890</option><option data-t="HOF">Botox terço superior — R$ 1.400</option>'+
+        '<option data-t="Cirurgia">Rinoplastia — R$ 18.500</option><option data-t="Retorno">Retorno com foto — sem custo</option>'+
+        '<option data-t="Avaliação">Avaliação facial — R$ 350</option></select></div>'+
+        '<div><label class="text-[11px] uppercase tracking-widest text-neutral-500">Duração</label>'+
+        '<select id="ag_nd" class="w-full mt-1 bg-[#0A0A0A] border border-neutral-700 rounded-lg px-3 py-2.5 text-sm text-neutral-200 outline-none focus:border-[#D4AF37]">'+
+        '<option>30 min</option><option selected>60 min</option><option>90 min</option><option>3 h</option></select></div></div>'+
+        '<div><label class="text-[11px] uppercase tracking-widest text-neutral-500">Profissional</label>'+
+        '<select id="ag_nprof" class="w-full mt-1 bg-[#0A0A0A] border border-neutral-700 rounded-lg px-3 py-2.5 text-sm text-neutral-200 outline-none focus:border-[#D4AF37]">'+
+        '<option>Dra. Marina Vasconcelos — HOF</option><option>Dr. Rafael Aguiar — Cirurgia da Face</option><option>Dra. Letícia Prado — Avaliação</option></select></div>'+
+        '<label class="flex items-center gap-2 text-sm text-neutral-400"><input type="checkbox" id="ag_nwpp" checked class="accent-[#D4AF37]"> Enviar confirmação por WhatsApp agora</label>'+
+        '<div class="flex gap-3 pt-1">'+
+        '<button onclick="agenda_de_consultas_salvar()" class="flex-1 bg-[#D4AF37] text-[#0A0A0A] font-bold rounded-lg py-2.5 text-sm hover:bg-[#e8c65a]">Confirmar agendamento</button>'+
+        '<button onclick="mostrarTela(\'orcamento-e-pagamento\')" class="px-4 border border-neutral-700 text-neutral-300 rounded-lg py-2.5 text-sm hover:border-[#D4AF37] hover:text-[#D4AF37]">Gerar orçamento</button>'+
+        '</div></div>';
+      agenda_de_consultas_abrir();
+    }
+
+    function agenda_de_consultas_salvar(){
+      const sel=document.getElementById('ag_ns');
+      const ev={h:agenda_de_consultas_ctx.hora,d:agenda_de_consultas_dias.indexOf(agenda_de_consultas_ctx.dia),
+        p:document.getElementById('ag_np').value.replace(' — vindo do funil',''),
+        s:sel.value.split(' — ')[0],t:sel.selectedOptions[0].dataset.t,
+        prof:document.getElementById('ag_nprof').value,st:'Confirmado'};
+      agenda_de_consultas_eventos=agenda_de_consultas_eventos.filter(e=>!(e.h===ev.h&&e.d===ev.d));
+      agenda_de_consultas_eventos.push(ev);
+      if(document.getElementById('ag_nwpp').checked){
+        const l=document.getElementById('ag_lembretes'); l.textContent=parseInt(l.textContent)+1;
+      }
+      agenda_de_consultas_fechar(); agenda_de_consultas_filtrar();
+    }
+
+    function agenda_de_consultas_abrirEvento(h,d){
+      const ev=agenda_de_consultas_eventos.find(e=>e.h===h&&e.d===d);
+      agenda_de_consultas_ctx={h:h,d:d};
+      const c=agenda_de_consultas_cores[ev.t];
+      document.getElementById('ag_modal_tag').textContent=ev.t;
+      document.getElementById('ag_modal_titulo').textContent=ev.p;
+      document.getElementById('ag_modal_corpo').innerHTML =
+        '<div class="rounded-lg p-4 mb-4" style="background:'+c[1]+';border-left:3px solid '+c[0]+'">'+
+        '<p class="text-sm text-[#FAFAFA] font-semibold">'+ev.s+'</p>'+
+        '<p class="text-xs text-neutral-400 mt-1">'+agenda_de_consultas_dias[d]+' às '+h+' · '+ev.prof+'</p>'+
+        '<p class="text-xs mt-2" style="color:'+c[0]+'" id="ag_st">Status: '+ev.st+'</p></div>'+
+        '<div class="grid grid-cols-2 gap-3 mb-3">'+
+        '<button onclick="agenda_de_consultas_confirmar()" class="bg-[#D4AF37] text-[#0A0A0A] font-bold rounded-lg py-2.5 text-sm hover:bg-[#e8c65a]">Confirmar presença</button>'+
+        '<button onclick="agenda_de_consultas_whats()" class="border border-[#3F6B5B] text-[#7FD1AE] rounded-lg py-2.5 text-sm hover:bg-[#3F6B5B]/20">Lembrete WhatsApp</button>'+
+        '<button onclick="agenda_de_consultas_remarcar()" class="border border-neutral-700 text-neutral-300 rounded-lg py-2.5 text-sm hover:border-[#D4AF37] hover:text-[#D4AF37]">Remarcar</button>'+
+        '<button onclick="agenda_de_consultas_fechar();mostrarTela(\'ficha-do-paciente\')" class="border border-neutral-700 text-neutral-300 rounded-lg py-2.5 text-sm hover:border-[#D4AF37] hover:text-[#D4AF37]">Abrir ficha</button>'+
+        '</div>'+
+        '<div class="flex gap-3">'+
+        '<button onclick="agenda_de_consultas_fechar();mostrarTela(\'evolucao-em-fotos\')" class="flex-1 text-xs text-neutral-400 border border-neutral-800 rounded-lg py-2 hover:text-[#D4AF37]">Evolução 90 dias</button>'+
+        '<button onclick="agenda_de_consultas_fechar();mostrarTela(\'orcamento-e-pagamento\')" class="flex-1 text-xs text-neutral-400 border border-neutral-800 rounded-lg py-2 hover:text-[#D4AF37]">Orçamento e pagamento</button>'+
+        '</div><p id="ag_feedback" class="text-xs text-[#D4AF37] mt-3 hidden"></p>';
+      agenda_de_consultas_abrir();
+    }
+    function agenda_de_consultas_feedback(txt){
+      const f=document.getElementById('ag_feedback'); f.textContent=txt; f.classList.remove('hidden');
+    }
+    function agenda_de_consultas_confirmar(){
+      const ev=agenda_de_consultas_eventos.find(e=>e.h===agenda_de_consultas_ctx.h&&e.d===agenda_de_consultas_ctx.d);
+      ev.st='Confirmado'; document.getElementById('ag_st').textContent='Status: Confirmado';
+      agenda_de_consultas_feedback('✓ Presença confirmada e registrada no prontuário.'); agenda_de_consultas_render();
+    }
+    function agenda_de_consultas_whats(){
+      const l=document.getElementById('ag_lembretes'); l.textContent=parseInt(l.textContent)+1;
+      agenda_de_consultas_feedback('✓ Lembrete enviado no WhatsApp com link de check-in.');
+    }
+    function agenda_de_consultas_remarcar(){
+      const ev=agenda_de_consultas_eventos.find(e=>e.h===agenda_de_consultas_ctx.h&&e.d===agenda_de_consultas_ctx.d);
+      const i=agenda_de_consultas_horas.indexOf(ev.h);
+      ev.h=agenda_de_consultas_horas[(i+1)%agenda_de_consultas_horas.length]; ev.st='Aguardando';
+      agenda_de_consultas_ctx.h=ev.h;
+      document.getElementById('ag_st').textContent='Status: Aguardando · remarcado para '+ev.h;
+      agenda_de_consultas_feedback('✓ Novo horário proposto ao paciente por WhatsApp.'); agenda_de_consultas_render();
+    }
+    agenda_de_consultas_render();
+  </script>
+</section>
+
     <!-- TELAS -->
     </main>
 
