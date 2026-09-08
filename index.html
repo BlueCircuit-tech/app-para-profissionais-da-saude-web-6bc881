@@ -1435,6 +1435,221 @@
   </script>
 </section>
 
+    <section data-tela="funil-de-leads" class="hidden">
+  <style>
+    .fl-col{background:#111111;border:1px solid #1f1f1f;border-radius:14px}
+    .fl-card{background:#171717;border:1px solid #262626;border-left:3px solid #D4AF37;border-radius:10px;cursor:grab;transition:.15s}
+    .fl-card:hover{background:#1e1e1e;transform:translateY(-2px)}
+    .fl-tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px}
+    .fl-drop{outline:2px dashed #D4AF37;outline-offset:-6px}
+    .fl-btn{background:#D4AF37;color:#0A0A0A;font-weight:600;border-radius:9px}
+    .fl-btn:hover{background:#e6c455}
+    .fl-ghost{border:1px solid #3a3a3a;color:#FAFAFA;border-radius:9px}
+    .fl-ghost:hover{border-color:#D4AF37;color:#D4AF37}
+  </style>
+
+  <div class="px-8 py-6">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+      <div>
+        <p class="text-[11px] tracking-[.25em] text-[#D4AF37] uppercase">Comercial</p>
+        <h1 class="text-3xl font-semibold text-[#FAFAFA] mt-1" style="font-family:Georgia,serif">Funil de Leads</h1>
+        <p class="text-sm text-neutral-500 mt-1">Harmonização Orofacial &amp; Cirurgia da Face — Dra. Marina Cavalcanti</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="funil_de_leads_novoLead()" class="fl-btn px-4 py-2 text-sm">+ Novo lead</button>
+        <button onclick="mostrarTela('agenda-de-consultas')" class="fl-ghost px-4 py-2 text-sm">Ver agenda</button>
+        <button onclick="mostrarTela('painel-do-profissional')" class="fl-ghost px-4 py-2 text-sm">Painel</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="fl-col p-4"><p class="text-xs text-neutral-500">Leads no mês</p><p class="text-2xl text-[#FAFAFA] font-semibold" id="fl-kpi-total">18</p></div>
+      <div class="fl-col p-4"><p class="text-xs text-neutral-500">Em qualificação</p><p class="text-2xl text-[#FAFAFA] font-semibold" id="fl-kpi-qual">4</p></div>
+      <div class="fl-col p-4"><p class="text-xs text-neutral-500">Orçamentos enviados</p><p class="text-2xl text-[#D4AF37] font-semibold">R$ 47.300</p></div>
+      <div class="fl-col p-4"><p class="text-xs text-neutral-500">Conversão</p><p class="text-2xl text-[#FAFAFA] font-semibold">32%</p></div>
+    </div>
+
+    <div class="flex gap-2 mb-5 text-xs">
+      <button onclick="funil_de_leads_filtrar('todos',this)" class="fl-filtro px-3 py-1.5 rounded-full bg-[#D4AF37] text-[#0A0A0A] font-semibold">Todas as origens</button>
+      <button onclick="funil_de_leads_filtrar('Instagram',this)" class="fl-filtro px-3 py-1.5 rounded-full border border-[#2d2d2d] text-neutral-400">Instagram</button>
+      <button onclick="funil_de_leads_filtrar('Indicação',this)" class="fl-filtro px-3 py-1.5 rounded-full border border-[#2d2d2d] text-neutral-400">Indicação</button>
+      <button onclick="funil_de_leads_filtrar('Formulário',this)" class="fl-filtro px-3 py-1.5 rounded-full border border-[#2d2d2d] text-neutral-400">Formulário do site</button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4" id="fl-board"></div>
+
+    <p class="text-[11px] text-neutral-600 mt-4">Arraste os cartões entre as colunas para mudar a etapa. Clique em um cartão para abrir o atendimento.</p>
+  </div>
+
+  <div id="fl-drawer" class="hidden fixed inset-0 z-40">
+    <div class="absolute inset-0 bg-black/70" onclick="funil_de_leads_fechar()"></div>
+    <aside class="absolute right-0 top-0 h-full w-full max-w-[520px] bg-[#0d0d0d] border-l border-[#222] overflow-y-auto">
+      <div class="p-6 border-b border-[#1f1f1f] flex items-start justify-between">
+        <div>
+          <p class="text-[11px] tracking-[.2em] text-[#D4AF37] uppercase" id="fl-d-etapa">Em qualificação</p>
+          <h2 class="text-2xl text-[#FAFAFA] font-semibold mt-1" id="fl-d-nome">—</h2>
+          <p class="text-sm text-neutral-500 mt-1" id="fl-d-sub">—</p>
+        </div>
+        <button onclick="funil_de_leads_fechar()" class="text-neutral-500 hover:text-[#D4AF37] text-xl leading-none">✕</button>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div class="fl-col p-3"><p class="text-[11px] text-neutral-500">Telefone</p><p class="text-[#FAFAFA]" id="fl-d-tel">—</p></div>
+          <div class="fl-col p-3"><p class="text-[11px] text-neutral-500">Ticket estimado</p><p class="text-[#D4AF37]" id="fl-d-valor">—</p></div>
+        </div>
+
+        <div>
+          <p class="text-xs tracking-[.2em] text-neutral-500 uppercase mb-2">Histórico de contatos</p>
+          <ul class="space-y-2 text-sm" id="fl-d-hist"></ul>
+        </div>
+
+        <div>
+          <p class="text-xs tracking-[.2em] text-neutral-500 uppercase mb-2">Chat de atendimento · WhatsApp</p>
+          <div class="fl-col p-3 h-48 overflow-y-auto space-y-2" id="fl-d-chat"></div>
+          <div class="flex gap-2 mt-2">
+            <input id="fl-d-msg" onkeydown="if(event.key==='Enter')funil_de_leads_enviar()" placeholder="Escreva para a paciente..." class="flex-1 bg-[#141414] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-[#FAFAFA] outline-none focus:border-[#D4AF37]">
+            <button onclick="funil_de_leads_enviar()" class="fl-btn px-4 text-sm">Enviar</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="funil_de_leads_agendar()" class="fl-btn py-2.5 text-sm">Agendar avaliação</button>
+          <button onclick="funil_de_leads_orcar()" class="fl-ghost py-2.5 text-sm">Gerar orçamento</button>
+          <button onclick="mostrarTela('ficha-do-paciente')" class="fl-ghost py-2.5 text-sm">Abrir ficha</button>
+          <button onclick="funil_de_leads_perder()" class="fl-ghost py-2.5 text-sm">Marcar como perdido</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="fl-toast" class="hidden fixed bottom-6 right-6 z-50 bg-[#D4AF37] text-[#0A0A0A] px-5 py-3 rounded-lg text-sm font-semibold shadow-lg"></div>
+
+<script>
+const funil_de_leads_etapas=[
+ {id:'novo',nome:'Novo lead',cor:'#3f3f46'},
+ {id:'qual',nome:'Em qualificação',cor:'#7c6a20'},
+ {id:'orc',nome:'Orçamento enviado',cor:'#D4AF37'},
+ {id:'pago',nome:'Pago',cor:'#2f7d5c'},
+ {id:'perd',nome:'Perdido',cor:'#7a2f2f'}];
+
+let funil_de_leads_dados=[
+ {id:1,etapa:'novo',nome:'Juliana Prado',origem:'Instagram',interesse:'Preenchimento labial + botox',tel:'(11) 98842-3310',valor:'R$ 3.200',
+  hist:['12/06 · Comentou no reels de HOF','12/06 · Direct respondido pela recepção'],
+  chat:[['ela','Oi! Vi o vídeo do preenchimento labial, quanto fica?'],['nos','Olá Juliana! O protocolo com 1ml fica R$ 2.400. Posso te enviar a avaliação?']]},
+ {id:2,etapa:'novo',nome:'Rafael Menezes',origem:'Formulário',interesse:'Rinoplastia estruturada',tel:'(21) 99114-7726',valor:'R$ 26.000',
+  hist:['11/06 · Preencheu formulário do site','11/06 · E-mail automático enviado'],
+  chat:[['ela','Boa tarde, gostaria de saber sobre rinoplastia.'],['nos','Boa tarde Rafael! A avaliação presencial é R$ 500, abatida do procedimento.']]},
+ {id:3,etapa:'qual',nome:'Camila Bertoldo',origem:'Indicação',interesse:'Bichectomia + contorno mandibular',tel:'(11) 97733-1180',valor:'R$ 8.900',
+  hist:['08/06 · Indicada pela paciente Renata Lopes','09/06 · Anamnese digital preenchida','10/06 · Exames laboratoriais recebidos'],
+  chat:[['ela','Mandei meus exames pelo app, deu tudo certo?'],['nos','Recebemos! Hemograma e coagulograma dentro da normalidade. Podemos agendar.']]},
+ {id:4,etapa:'qual',nome:'Patrícia Andrade',origem:'Instagram',interesse:'Full face — 3 sessões',tel:'(31) 98220-5541',valor:'R$ 12.400',
+  hist:['07/06 · Direct sobre harmonização','09/06 · Ligação de qualificação (9 min)'],
+  chat:[['ela','Quero fazer aos poucos, dá pra parcelar?'],['nos','Sim! Em até 10x no cartão ou Pix com 7% de desconto.']]},
+ {id:5,etapa:'orc',nome:'Fernanda Quintela',origem:'Indicação',interesse:'Lifting facial profundo',tel:'(11) 99560-2244',valor:'R$ 34.500',
+  hist:['02/06 · Avaliação presencial realizada','04/06 · Orçamento #2291 enviado','06/06 · Follow-up por WhatsApp'],
+  chat:[['nos','Fernanda, o orçamento #2291 já está no seu portal.'],['ela','Vi sim! Vou conversar com meu marido e retorno até sexta.']]},
+ {id:6,etapa:'pago',nome:'Letícia Marques',origem:'Formulário',interesse:'Blefaroplastia superior',tel:'(11) 98110-6690',valor:'R$ 14.800',
+  hist:['28/05 · Avaliação realizada','30/05 · Orçamento #2274 aprovado','31/05 · Pix de R$ 14.800 confirmado'],
+  chat:[['ela','Fiz o Pix agora!'],['nos','Recebido, Letícia! Cirurgia marcada para 24/06 às 07h30.']]},
+ {id:7,etapa:'perd',nome:'Marcos Vinícius Reis',origem:'Instagram',interesse:'Botox terapêutico (bruxismo)',tel:'(11) 97001-3388',valor:'R$ 1.900',
+  hist:['20/05 · Contato inicial','27/05 · Sem retorno após 3 tentativas'],
+  chat:[['nos','Marcos, conseguiu ver nossa proposta?'],['ela','Por enquanto vou deixar pra frente, obrigado.']]}];
+
+let funil_de_leads_filtro='todos', funil_de_leads_atual=null;
+
+function funil_de_leads_render(){
+ const b=document.getElementById('fl-board'); if(!b) return; b.innerHTML='';
+ funil_de_leads_etapas.forEach(e=>{
+  const itens=funil_de_leads_dados.filter(l=>l.etapa===e.id&&(funil_de_leads_filtro==='todos'||l.origem===funil_de_leads_filtro));
+  const col=document.createElement('div');
+  col.className='fl-col p-3 min-h-[320px]';
+  col.ondragover=ev=>{ev.preventDefault();col.classList.add('fl-drop');};
+  col.ondragleave=()=>col.classList.remove('fl-drop');
+  col.ondrop=ev=>{ev.preventDefault();col.classList.remove('fl-drop');funil_de_leads_mover(+ev.dataTransfer.getData('id'),e.id);};
+  col.innerHTML='<div class="flex items-center justify-between mb-3 pb-2 border-b border-[#1f1f1f]"><span class="text-xs tracking-[.14em] uppercase text-[#FAFAFA]">'+e.nome+'</span><span class="fl-tag text-[#0A0A0A]" style="background:'+e.cor+';color:#FAFAFA">'+itens.length+'</span></div>';
+  itens.forEach(l=>{
+   const c=document.createElement('div');
+   c.className='fl-card p-3 mb-2'; c.draggable=true;
+   c.ondragstart=ev=>ev.dataTransfer.setData('id',l.id);
+   c.onclick=()=>funil_de_leads_abrir(l.id);
+   c.innerHTML='<p class="text-sm text-[#FAFAFA] font-semibold">'+l.nome+'</p><p class="text-xs text-neutral-500 mt-1">'+l.interesse+'</p><div class="flex items-center justify-between mt-2"><span class="fl-tag bg-[#0A0A0A] text-[#D4AF37] border border-[#3a2f10]">'+l.origem+'</span><span class="text-xs text-neutral-400">'+l.valor+'</span></div>';
+   col.appendChild(c);
+  });
+  if(!itens.length) col.innerHTML+='<p class="text-xs text-neutral-700 text-center mt-8">Nenhum lead aqui</p>';
+  b.appendChild(col);
+ });
+ document.getElementById('fl-kpi-total').textContent=funil_de_leads_dados.length;
+ document.getElementById('fl-kpi-qual').textContent=funil_de_leads_dados.filter(l=>l.etapa==='qual').length;
+}
+
+function funil_de_leads_mover(id,etapa){
+ const l=funil_de_leads_dados.find(x=>x.id===id); if(!l||l.etapa===etapa) return;
+ l.etapa=etapa; const nome=funil_de_leads_etapas.find(e=>e.id===etapa).nome;
+ l.hist.unshift(new Date().toLocaleDateString('pt-BR').slice(0,5)+' · Movido para "'+nome+'"');
+ funil_de_leads_render(); funil_de_leads_toast(l.nome+' → '+nome);
+}
+
+function funil_de_leads_filtrar(o,btn){
+ funil_de_leads_filtro=o;
+ document.querySelectorAll('.fl-filtro').forEach(b=>b.className='fl-filtro px-3 py-1.5 rounded-full border border-[#2d2d2d] text-neutral-400');
+ btn.className='fl-filtro px-3 py-1.5 rounded-full bg-[#D4AF37] text-[#0A0A0A] font-semibold';
+ funil_de_leads_render();
+}
+
+function funil_de_leads_abrir(id){
+ const l=funil_de_leads_dados.find(x=>x.id===id); funil_de_leads_atual=l;
+ document.getElementById('fl-d-nome').textContent=l.nome;
+ document.getElementById('fl-d-sub').textContent=l.interesse+' · origem: '+l.origem;
+ document.getElementById('fl-d-etapa').textContent=funil_de_leads_etapas.find(e=>e.id===l.etapa).nome;
+ document.getElementById('fl-d-tel').textContent=l.tel;
+ document.getElementById('fl-d-valor').textContent=l.valor;
+ document.getElementById('fl-d-hist').innerHTML=l.hist.map(h=>'<li class="flex gap-2 text-neutral-400"><span class="text-[#D4AF37]">•</span>'+h+'</li>').join('');
+ funil_de_leads_chat();
+ document.getElementById('fl-drawer').classList.remove('hidden');
+}
+function funil_de_leads_chat(){
+ document.getElementById('fl-d-chat').innerHTML=funil_de_leads_atual.chat.map(m=>
+  m[0]==='nos'
+   ? '<div class="text-right"><span class="inline-block bg-[#D4AF37] text-[#0A0A0A] px-3 py-2 rounded-lg rounded-br-none max-w-[80%] text-left">'+m[1]+'</span></div>'
+   : '<div><span class="inline-block bg-[#1f1f1f] text-[#FAFAFA] px-3 py-2 rounded-lg rounded-bl-none max-w-[80%]">'+m[1]+'</span></div>').join('');
+ const c=document.getElementById('fl-d-chat'); c.scrollTop=c.scrollHeight;
+}
+function funil_de_leads_enviar(){
+ const i=document.getElementById('fl-d-msg'); if(!i.value.trim()||!funil_de_leads_atual) return;
+ funil_de_leads_atual.chat.push(['nos',i.value.trim()]); i.value=''; funil_de_leads_chat();
+ funil_de_leads_toast('Mensagem enviada por WhatsApp');
+}
+function funil_de_leads_fechar(){document.getElementById('fl-drawer').classList.add('hidden');}
+function funil_de_leads_agendar(){
+ if(funil_de_leads_atual&&funil_de_leads_atual.etapa==='novo') funil_de_leads_mover(funil_de_leads_atual.id,'qual');
+ funil_de_leads_fechar(); mostrarTela('agenda-de-consultas');
+}
+function funil_de_leads_orcar(){
+ if(funil_de_leads_atual) funil_de_leads_mover(funil_de_leads_atual.id,'orc');
+ funil_de_leads_fechar(); mostrarTela('orcamento-e-pagamento');
+}
+function funil_de_leads_perder(){
+ if(!funil_de_leads_atual) return;
+ funil_de_leads_mover(funil_de_leads_atual.id,'perd'); funil_de_leads_fechar();
+}
+function funil_de_leads_novoLead(){
+ const nomes=[['Bianca Toledo','Instagram','Preenchimento de olheiras','R$ 2.600','(11) 98455-1209'],
+              ['Otávio Ferrari','Indicação','Otoplastia','R$ 11.200','(11) 99871-4432'],
+              ['Sabrina Kühn','Formulário','Fios de PDO + skinbooster','R$ 5.400','(47) 98332-0087']];
+ const n=nomes[funil_de_leads_dados.length%3];
+ funil_de_leads_dados.unshift({id:Date.now(),etapa:'novo',nome:n[0],origem:n[1],interesse:n[2],tel:n[4],valor:n[3],
+  hist:['Hoje · Lead capturado automaticamente'],chat:[['ela','Olá, tenho interesse em '+n[2].toLowerCase()+'.']]});
+ funil_de_leads_render(); funil_de_leads_toast('Novo lead recebido: '+n[0]);
+}
+function funil_de_leads_toast(t){
+ const el=document.getElementById('fl-toast'); el.textContent=t; el.classList.remove('hidden');
+ clearTimeout(window.funil_de_leads_tt); window.funil_de_leads_tt=setTimeout(()=>el.classList.add('hidden'),2200);
+}
+funil_de_leads_render();
+</script>
+</section>
+
     <!-- TELAS -->
     </main>
 
